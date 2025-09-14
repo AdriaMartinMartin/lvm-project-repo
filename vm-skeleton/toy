@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+function display_help {
+  echo '   _______  _______  __   __ '
+  echo '  |       ||       ||  | |  |'
+  echo '  |_     _||   _   ||  |_|  |'
+  echo '    |   |  |  | |  ||       |'
+  echo '    |   |  |  |_|  ||_     _|'
+  echo '    |   |  |       |  |   |  '
+  echo '    |___|  |_______|  |___|  '
+  echo ''
+  echo '           Toy Command Line'
+  echo ''
+  echo ' Usage:'
+  echo '   toy [options] <script file>'
+  echo ''
+  echo ' Options:'
+  echo '   -help               Show help information'
+  echo '   -debug              Start the Toy VM in JVM debug mode'
+  echo '   -jit                Enable JIT compilation (and all other options)'
+  echo '   -inline-caches      Enable Inline Caches'
+  echo '   -string-ropes       Enable String Ropes'
+  echo '   -array-strategies   Enable Array Storage Strategies'
+  echo ''
+  echo ' Examples:'
+  echo '   toy -jit foo.sl'
+  echo '   toy --help'
+}
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+PROGRAM_ARGS=()
+JAVA_ARGS=()
+if [ -e "$JAVA_HOME/bin/java" ]; then
+    for opt in "$@"
+    do
+      case $opt in
+        -help)
+            display_help; exit 0 ;;
+        -debug)
+            JAVA_ARGS+=("-Xdebug" "-Xrunjdwp:transport=dt_socket,server=y,address=8000,suspend=y") ;;
+        -jit)
+            JAVA_ARGS+=("-Dtoy.Jit") ;;
+        -inline-caches)
+            JAVA_ARGS+=("-Dtoy.InlineCaches") ;;
+        -string-ropes)
+            JAVA_ARGS+=("-Dtoy.StringRopes") ;;
+        -array-strategies)
+            JAVA_ARGS+=("-Dtoy.ArrayStrategies") ;;
+        *)
+            PROGRAM_ARGS+=("$opt") ;;
+      esac
+    done
+    
+    "$JAVA_HOME/bin/java" "${JAVA_ARGS[@]}" -jar "${DIR}/target/vm-1.0-SNAPSHOT.jar" "${PROGRAM_ARGS[@]}"
+
+else
+    echo "Cannot find a JVM in your JAVA_HOME"
+fi

@@ -1,0 +1,7 @@
+sNULL
+sbar
+NULLs
+NULLs
+bars
+2 < 4: true
+Type error: operation "<" not defined for Number 2, String "4"
