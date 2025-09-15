@@ -47,5 +47,6 @@ RUN java -version && mvn -version
 RUN ls -al .
 RUN cd reference-impl && mvn clean package -DskipTests
 RUN echo '/usr/src/vm/reference-impl/standalone/target/sl "$@"' > /usr/local/bin/sl
+RUN chmod +x /usr/local/bin/sl
 
 CMD ["bash"]

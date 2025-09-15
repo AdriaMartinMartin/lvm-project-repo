@@ -9,7 +9,8 @@ fi
 
 EXECUTABLE=$1
 
-LOGFILE="execution_log_$(date +%Y%m%d_%H%M%S).log"
+mkdir logs/benchmarks/
+LOGFILE="logs/benchmarks/execution_log_$(date +%Y%m%d_%H%M%S).log"
 
 echo "=== Logging output in $LOGFILE ==="
 
