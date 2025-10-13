@@ -1,0 +1,6 @@
+i: 1, current sum: 1
+i: 3, current sum: 4
+i: 5, current sum: 9
+i: 7, current sum: 16
+i: 9, current sum: 25
+Final sum of odd numbers: 25

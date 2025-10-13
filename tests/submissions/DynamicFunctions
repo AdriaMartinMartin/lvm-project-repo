@@ -1,0 +1,91 @@
+// ("Other" test). Print values from an array of objects in a dynamically generated function.
+// Also create objects dynamically from generated functions.
+function printlnAssert(s) {
+    println("ASSERTION FAILED: " + s);
+}
+
+function createOrder(name, quantity) {
+    if (name == NULL) {
+        printlnAssert("name cannot be null");
+    }
+    if (quantity == NULL) {
+        printlnAssert("quantity cannot be null");
+    }
+
+    // Create object in dynamically defined function.
+    defineFunction("function doCreateOrder(name, quantity) { order = new(); order.name = name; order.quantity = quantity; return order; }");
+    return doCreateOrder(name, quantity);
+}
+
+function printOrderNumber(nr) {
+    println("Order number: " + nr);
+}
+
+function printOrder(order, custName) {
+    if (order == NULL) {
+        printlnAssert("order cannot be NULL.");
+    }
+
+    println("Customer " + custName +  " ordered " + order.quantity + "x " + order.name);
+}
+
+function createOrderListFunction(funcName, orderNumber, introRepeat) {
+    // Define function signature
+    functionDef = "function " + funcName + "(introduction, custName, orders) {";
+
+    if (introRepeat < 0) {
+        printlnAssert("introRepeat should not be negative");
+    }
+
+    // Repeated statements added dynamically to the function
+    i = 0;
+    while (i < introRepeat) {
+        functionDef = functionDef + "println(introduction);";
+        i = i + 1;
+    }
+
+    functionDef = functionDef + "printOrderNumber(" + orderNumber + ");";
+
+    // While loop directly inside the function
+    functionDef = functionDef + "i = 0;";
+    functionDef = functionDef + "while (i < getSize(orders)) { printOrder(orders[i], custName); i = i + 1; }";
+
+    // Closing curly bracket of the function
+    functionDef = functionDef + "}";
+    // Dynamically define function
+    defineFunction(functionDef);
+}
+
+function main() {
+    // Create an order and print it twice with different values
+    jackOrders = new();
+    jackOrders[0] = createOrder("French fries", 2);
+    jackOrders[1] = createOrder("Hamburger", 5);
+    createOrderListFunction("test", 42, 3);
+    test("Hey", "Jack", jackOrders);
+    test("Hello Sir", "Bill", jackOrders);
+
+    // Change the quantity of one of the orders and reprint
+    jackOrders[1].quantity = 100;
+
+    // Re-make the order list but use the same function name
+    createOrderListFunction("test", 57, 2);
+    test("Hey", "Jack", jackOrders);
+    test("Hello Sir", "Peter", jackOrders);
+
+    bigSmokesOrder = new();
+    bigSmokesOrder[0] = createOrder("Number 9", 2);
+    bigSmokesOrder[1] = createOrder("Number 9 large", 1);
+    bigSmokesOrder[2] = createOrder("Number 6 with extra dip", 1);
+    bigSmokesOrder[3] = createOrder("Number 7", 1);
+    bigSmokesOrder[4] = createOrder("Number 45", 1);
+    bigSmokesOrder[5] = createOrder("Number 45 with cheese", 1);
+    bigSmokesOrder[6] = createOrder("Large soda", 1);
+    createOrderListFunction("aMassiveOrder", 52819, 7);
+    aMassiveOrder("WAKE UP, YOUR FOOD IS READY", "Big Smoke", bigSmokesOrder);
+
+    // Change one of the orders and reprint
+    bigSmokesOrder[3].name = "Mega cheeseburger with extra bacon";
+    bigSmokesOrder[3].quantity = 6472389;
+    aMassiveOrder("WAKE UP, YOUR FOOD IS READY", "Big Smoke", bigSmokesOrder);
+}

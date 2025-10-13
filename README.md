@@ -33,3 +33,49 @@ All tests pass on the RI, and the output should look like:
 ```
 
 The actual number of unit tests will change during the VM course, so `57` is just an example.
+
+# Helper
+
+While building the bytecode compiler, it might be nice to see how the AST looks like.
+To help you visualise the AST, the `-dump-ast` flag and the `prettify.py` script are now available.
+
+You can use them inside the docker like so:
+```
+./toy ../tests/Emoji.sl -dump-ast | ../prettify.py
+```
+
+Note that the script is mostly LLM generated, so it might break in some edge cases. Still, it can be useful if you are unsure why some nodes are not being visited.
+
+Example output for the `FunctionRedefinitionDuringExecution.sl` test:
+
+```
+ToyBlockNode
+  functionName: 'greet'
+  statements:
+  - ToyInvokeNode
+    functionNode: ToyFunctionLiteralNode
+      name: 'println'
+    toyExpressionNodes:
+  - ToyStringLiteralNode
+    value: 'Hello!'
+
+------------------------------------------------------
+
+ToyBlockNode
+  functionName: 'main'
+  statements:
+  - ToyInvokeNode
+    functionNode: ToyFunctionLiteralNode
+      name: 'greet'
+    toyExpressionNodes:
+  - ToyInvokeNode
+    functionNode: ToyFunctionLiteralNode
+      name: 'defineFunction'
+    toyExpressionNodes:
+  - ToyStringLiteralNode
+      value: 'function greet() { println(42); }'
+  - ToyInvokeNode
+    functionNode: ToyFunctionLiteralNode
+      name: 'greet'
+    toyExpressionNodes:
+```

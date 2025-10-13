@@ -55,6 +55,7 @@ import com.oracle.truffle.sl.nodes.SLBinaryNode;
 import com.oracle.truffle.sl.runtime.SLBigInteger;
 import com.oracle.truffle.sl.runtime.SLFunction;
 import com.oracle.truffle.sl.runtime.SLNull;
+import com.oracle.truffle.sl.runtime.SLType;
 
 /**
  * The {@code ==} operator of SL is defined on all types. Therefore, we need a
@@ -148,6 +149,8 @@ public abstract class SLEqualNode extends SLBinaryNode {
                 return doBigNumber((SLBigInteger) left, (SLBigInteger) right);
             } else if (leftInterop.hasIdentity(left) && rightInterop.hasIdentity(right)) {
                 return leftInterop.isIdentical(left, right, rightInterop);
+            } else if (left instanceof SLType && right instanceof SLType) {
+                return ((SLType)left).getName() == ((SLType)right).getName();
             } else {
                 /*
                  * We return false in good dynamic language manner. Stricter languages might throw

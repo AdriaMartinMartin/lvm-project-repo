@@ -71,7 +71,7 @@ public abstract class SLTypeOfBuiltin extends SLBuiltinNode {
             }
         }
         if (operand instanceof SLType) {
-            return SLType.STRING;
+            return SLType.TYPE;
         }
         for (SLType type : SLType.PRECEDENCE) {
             if (type.isInstance(operand, interop)) {

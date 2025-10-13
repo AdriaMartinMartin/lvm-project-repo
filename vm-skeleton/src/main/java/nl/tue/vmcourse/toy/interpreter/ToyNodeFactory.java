@@ -15,7 +15,7 @@ import org.antlr.v4.runtime.Token;
 public class ToyNodeFactory {
 
     // TODO this could be a config flag, not a constant.
-    private static final boolean DUMP_AST = true;
+    private static final boolean DUMP_AST = System.getProperty("toy.DumpAST") != null;
 
     public ToyExpressionNode createMinExpression(ToyExpressionNode exp) {
         return new ToyUnaryMinNode(exp);
@@ -110,7 +110,7 @@ public class ToyNodeFactory {
                 System.out.println("+++++");
                 System.out.println("+++++ AST for " + functionName);
                 System.out.println("+++++");
-                System.out.println(methodBlock.toString());
+                System.out.println(((ToyBlockNode)methodBlock).printTree(functionName));
                 System.out.println("+++++");
             }
 
@@ -239,6 +239,28 @@ public class ToyNodeFactory {
         return result;
     }
 
+    public ToyExpressionNode createUnary(Token opToken, ToyExpressionNode leftNode) {
+        if (leftNode == null) {
+            return null;
+        }
+        final ToyExpressionNode leftUnboxed = new ToyUnboxNode(leftNode);
+
+        final ToyExpressionNode result;
+        switch (opToken.getText()) {
+            case "-":
+                result = new ToyUnaryMinNode(leftUnboxed);
+                break;
+            case "+":
+                result = leftUnboxed;
+                break;
+            default:
+                throw new RuntimeException("unexpected operation: " + opToken.getText());
+        }
+
+        return result;
+    }
+
+
     public ToyExpressionNode createCall(ToyExpressionNode functionNode, List<ToyExpressionNode> parameterNodes, Token finalToken) {
         if (functionNode == null || containsNull(parameterNodes)) {
             return null;
@@ -294,32 +316,18 @@ public class ToyNodeFactory {
         return new ToyStringLiteralNode(asString(literalToken, removeQuotes));
     }
 
-    public ToyExpressionNode createUniverse(Token token) {
-        return new ToyUniverseNode();
-    }
-
-    public ToyExpressionNode createNewObject(Token token) {
-        return new ToyNewObjectNode();
-    }
-
-    public ToyExpressionNode createUndef(Token token) {
-        return new ToyUndefNode();
-    }
-
     public ToyExpressionNode createBooleanLiteral(boolean value) {
         return new ToyBooleanLiteralNode(value);
     }
 
     private String asString(Token literalToken, boolean removeQuotes) {
+        String raw = literalToken.getText();
         if (removeQuotes) {
             /* Remove the trailing and ending " */
-            assert literalToken.getText().length() >= 2
-                    && literalToken.getText().startsWith("\"")
-                    && literalToken.getText().endsWith("\"");
-            String text = literalToken.getText();
-            return text.substring(1, text.length() - 1);
+            assert raw.length() >= 2 && raw.startsWith("\"") && raw.endsWith("\"");
+            raw = raw.substring(1, raw.length() - 1);
         }
-        return literalToken.getText();
+        return raw;
     }
 
     public ToyExpressionNode createNumericLiteral(Token literalToken) {

@@ -60,6 +60,7 @@ import com.oracle.truffle.sl.nodes.SLTypes;
 import com.oracle.truffle.sl.runtime.SLBigInteger;
 import com.oracle.truffle.sl.runtime.SLFunction;
 import com.oracle.truffle.sl.runtime.SLNull;
+import com.oracle.truffle.sl.runtime.SLType;
 import com.oracle.truffle.sl.runtime.SLStrings;
 
 /**
@@ -135,6 +136,8 @@ public abstract class SLToTruffleStringNode extends Node {
                 return fromJavaStringNode.execute(bigNumberToString((SLBigInteger) value), SLLanguage.STRING_ENCODING);
             } else if (interop.isNull(value)) {
                 return SLStrings.NULL_LC;
+            } else if (value instanceof SLType) {
+                return SLStrings.fromJavaString((String)((SLType)value).getName());
             } else {
                 return FOREIGN_OBJECT;
             }

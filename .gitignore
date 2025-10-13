@@ -1,5 +1,5 @@
 .DS_Store
 *.log
-logs/
 *.jar
-.idea/
+execution_log*
+processed_files.txt

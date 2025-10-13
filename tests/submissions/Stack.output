@@ -1,0 +1,17 @@
+Initial stack trace in main:
+Frame: root main
+In function1 with x = 5
+Stack trace in function1:
+Frame: root function1, x=5
+Frame: root main
+In function2 with y = 6
+Stack trace in function2:
+Frame: root function2, y=6
+Frame: root function1, x=5
+Frame: root main
+In function3 with z = 18
+Stack trace in function3:
+Frame: root function3, z=18
+Frame: root function2, y=6
+Frame: root function1, x=5
+Frame: root main

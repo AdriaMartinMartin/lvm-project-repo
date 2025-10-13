@@ -1,4 +1,4 @@
-// Generated from /Users/danieleb/GoogleDrive/2IMD20/labs/lab_01_AST/lab01/src/ToyLang.g4 by ANTLR 4.12.0
+// Generated from src/main/java/nl/tue/vmcourse/toy/parser/ToyLang.g4 by ANTLR 4.12.0
 package nl.tue.vmcourse.toy.parser;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
@@ -96,6 +96,13 @@ public class ToyLangBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitTerm(ToyLangParser.TermContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitUnary(ToyLangParser.UnaryContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

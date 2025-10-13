@@ -27,7 +27,7 @@ function display_help {
   echo '   toy --help'
 }
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DIR="/usr/src/vm/vm-skeleton"
 
 PROGRAM_ARGS=()
 JAVA_ARGS=()
@@ -47,6 +47,8 @@ if [ -e "$JAVA_HOME/bin/java" ]; then
             JAVA_ARGS+=("-Dtoy.StringRopes") ;;
         -array-strategies)
             JAVA_ARGS+=("-Dtoy.ArrayStrategies") ;;
+        -dump-ast)
+            JAVA_ARGS+=("-Dtoy.DumpAST") ;;
         *)
             PROGRAM_ARGS+=("$opt") ;;
       esac

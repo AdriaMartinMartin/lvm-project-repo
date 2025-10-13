@@ -85,6 +85,7 @@ public final class SLType implements TruffleObject {
     public static final SLType BOOLEAN = new SLType("Boolean", (l, v) -> l.isBoolean(v));
     public static final SLType OBJECT = new SLType("Object", (l, v) -> l.hasMembers(v));
     public static final SLType FUNCTION = new SLType("Function", (l, v) -> l.isExecutable(v));
+    public static final SLType TYPE = new SLType("Type", (l, v) -> v instanceof SLType);
 
     /*
      * This array is used when all types need to be checked in a certain order. While most interop

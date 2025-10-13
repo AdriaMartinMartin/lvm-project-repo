@@ -1,4 +1,4 @@
-// Generated from /Users/danieleb/GoogleDrive/2IMD20/labs/lab_01_AST/lab01/src/ToyLang.g4 by ANTLR 4.12.0
+// Generated from src/main/java/nl/tue/vmcourse/toy/parser/ToyLang.g4 by ANTLR 4.12.0
 package nl.tue.vmcourse.toy.parser;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -82,6 +82,12 @@ public interface ToyLangVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitTerm(ToyLangParser.TermContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ToyLangParser#unary}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUnary(ToyLangParser.UnaryContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ToyLangParser#factor}.
 	 * @param ctx the parse tree

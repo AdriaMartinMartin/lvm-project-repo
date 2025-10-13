@@ -17,10 +17,10 @@ public class ToyBlockNode extends ToyStatementNode {
         return List.of(statements);
     }
 
-    @Override
-    public String toString() {
+    public String printTree(String functionName) {
         return "ToyBlockNode{" +
-                "statements=" + Arrays.toString(statements) +
+                "functionName=" + functionName +
+                ", statements=" + Arrays.toString(statements) +
                 '}';
     }
 }

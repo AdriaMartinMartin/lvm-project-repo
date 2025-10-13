@@ -45,8 +45,8 @@ WORKDIR /usr/src/vm
 RUN java -version && mvn -version
 
 RUN ls -al .
-RUN cd reference-impl && mvn clean package -DskipTests
-RUN echo '/usr/src/vm/reference-impl/standalone/target/sl "$@"' > /usr/local/bin/sl
-RUN chmod +x /usr/local/bin/sl
+RUN cd vm-skeleton && mvn clean package -DskipTests
+COPY /vm-skeleton/toy /usr/local/bin/toy
+RUN chmod +x /usr/local/bin/toy
 
 CMD ["bash"]
