@@ -1,5 +1,7 @@
 package nl.tue.vmcourse.toy.ast;
 
+import nl.tue.vmcourse.toy.bci.CompileContext;
+
 import java.util.Arrays;
 
 public class ToyInvokeNode extends ToyExpressionNode {
@@ -18,5 +20,17 @@ public class ToyInvokeNode extends ToyExpressionNode {
                 "functionNode=" + functionNode +
                 ", toyExpressionNodes=" + Arrays.toString(toyExpressionNodes) +
                 '}';
+    }
+
+    @Override
+    public void compile(CompileContext ctx) {
+
+
+        for (ToyExpressionNode node : toyExpressionNodes) {
+            node.compile(ctx);
+
+        }
+
+
     }
 }

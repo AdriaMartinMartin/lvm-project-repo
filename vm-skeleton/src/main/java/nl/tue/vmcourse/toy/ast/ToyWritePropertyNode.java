@@ -1,5 +1,7 @@
 package nl.tue.vmcourse.toy.ast;
 
+import nl.tue.vmcourse.toy.bci.CompileContext;
+
 public class ToyWritePropertyNode extends ToyExpressionNode {
     private final ToyExpressionNode receiverNode;
     private final ToyExpressionNode nameNode;
@@ -10,6 +12,11 @@ public class ToyWritePropertyNode extends ToyExpressionNode {
         this.receiverNode = receiverNode;
         this.nameNode = nameNode;
         this.valueNode = valueNode;
+    }
+
+    @Override
+    public void compile(CompileContext ctx) {
+
     }
 
     @Override

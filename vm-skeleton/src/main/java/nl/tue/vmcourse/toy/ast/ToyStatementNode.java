@@ -1,6 +1,7 @@
 package nl.tue.vmcourse.toy.ast;
 
 import java.util.List;
+import nl.tue.vmcourse.toy.bci.CompileContext;
 
 public abstract class ToyStatementNode extends ToyAstNode {
 
@@ -9,4 +10,5 @@ public abstract class ToyStatementNode extends ToyAstNode {
         throw new RuntimeException("TODO: return children if any (or empty list otherwise)");
     }
 
+    public abstract void compile(CompileContext ctx);
 }

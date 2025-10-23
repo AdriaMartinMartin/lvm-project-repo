@@ -1,5 +1,8 @@
 package nl.tue.vmcourse.toy.ast;
 
+import nl.tue.vmcourse.toy.bci.CompileContext;
+import nl.tue.vmcourse.toy.bci.OpCode;
+
 public class ToyLongLiteralNode extends ToyExpressionNode {
     private final long value;
 
@@ -8,10 +11,19 @@ public class ToyLongLiteralNode extends ToyExpressionNode {
         this.value = value;
     }
 
+
+
     @Override
     public String toString() {
         return "ToyLongLiteralNode{" +
                 "value=" + value +
                 '}';
+    }
+
+    @Override
+    public void compile(CompileContext ctx) {
+        ctx.emit(OpCode.PUSH_I64);
+        ctx.emitI64(value);
+        System.out.println("PUSH_I64 " + value);
     }
 }

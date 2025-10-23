@@ -1,5 +1,7 @@
 package nl.tue.vmcourse.toy.ast;
 
+import nl.tue.vmcourse.toy.bci.CompileContext;
+
 public class ToyWriteLocalVariableNode extends ToyExpressionNode {
     private final ToyExpressionNode valueNode;
     private final Integer frameSlot;
@@ -12,6 +14,11 @@ public class ToyWriteLocalVariableNode extends ToyExpressionNode {
         this.frameSlot = frameSlot;
         this.nameNode = nameNode;
         this.newVariable = newVariable;
+    }
+
+    @Override
+    public void compile(CompileContext ctx) {
+
     }
 
     @Override

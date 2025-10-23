@@ -1,5 +1,7 @@
 package nl.tue.vmcourse.toy.ast;
 
+import nl.tue.vmcourse.toy.bci.CompileContext;
+
 public class ToyFunctionLiteralNode extends ToyExpressionNode {
     private final String name;
 
@@ -13,5 +15,11 @@ public class ToyFunctionLiteralNode extends ToyExpressionNode {
         return "ToyFunctionLiteralNode{" +
                 "name='" + name + '\'' +
                 '}';
+    }
+
+    @Override
+    public void compile(CompileContext ctx) {
+
+
     }
 }

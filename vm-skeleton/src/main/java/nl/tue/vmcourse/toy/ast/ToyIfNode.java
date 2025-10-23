@@ -1,5 +1,7 @@
 package nl.tue.vmcourse.toy.ast;
 
+import nl.tue.vmcourse.toy.bci.CompileContext;
+
 public class ToyIfNode extends ToyStatementNode {
     private final ToyExpressionNode conditionNode;
     private final ToyStatementNode thenPartNode;
@@ -9,6 +11,11 @@ public class ToyIfNode extends ToyStatementNode {
         this.conditionNode = conditionNode;
         this.thenPartNode = thenPartNode;
         this.elsePartNode = elsePartNode;
+    }
+
+    @Override
+    public void compile(CompileContext ctx) {
+
     }
 
     @Override

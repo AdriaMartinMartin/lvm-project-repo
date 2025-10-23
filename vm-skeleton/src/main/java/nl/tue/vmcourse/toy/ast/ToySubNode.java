@@ -1,5 +1,7 @@
 package nl.tue.vmcourse.toy.ast;
 
+import nl.tue.vmcourse.toy.bci.CompileContext;
+
 public class ToySubNode extends ToyExpressionNode {
     private final ToyExpressionNode leftUnboxed;
     private final ToyExpressionNode rightUnboxed;
@@ -8,6 +10,11 @@ public class ToySubNode extends ToyExpressionNode {
         super();
         this.leftUnboxed = leftUnboxed;
         this.rightUnboxed = rightUnboxed;
+    }
+
+    @Override
+    public void compile(CompileContext ctx) {
+
     }
 
     @Override

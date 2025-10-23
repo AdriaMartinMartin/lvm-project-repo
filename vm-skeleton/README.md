@@ -17,3 +17,5 @@ Notable classes that will need some work:
 
 Important: this is a simple skeleton to help you getting started. You are free to change _anything_, and in fact a few classes are intentionally left empty or underspecified.
 
+
+[\u@\h \[\033[38;5;81m\]\W\[\033[0m\]]:

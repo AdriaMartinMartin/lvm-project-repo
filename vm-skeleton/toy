@@ -21,6 +21,7 @@ function display_help {
   echo '   -inline-caches      Enable Inline Caches'
   echo '   -string-ropes       Enable String Ropes'
   echo '   -array-strategies   Enable Array Storage Strategies'
+  echo '   -dump-ast           Shows the AST tree generated'
   echo ''
   echo ' Examples:'
   echo '   toy -jit foo.sl'

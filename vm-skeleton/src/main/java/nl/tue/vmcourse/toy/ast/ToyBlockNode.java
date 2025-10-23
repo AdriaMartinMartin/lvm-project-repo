@@ -1,6 +1,7 @@
 package nl.tue.vmcourse.toy.ast;
 
-import nl.tue.vmcourse.toy.lang.VirtualFrame;
+import nl.tue.vmcourse.toy.bci.CompileContext;
+import nl.tue.vmcourse.toy.bci.OpCode;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,6 +12,16 @@ public class ToyBlockNode extends ToyStatementNode {
     public ToyBlockNode(ToyStatementNode[] nodes) {
         super();
         this.statements = nodes;
+    }
+
+    @Override
+    public void compile(CompileContext ctx) {
+        for (ToyStatementNode node : statements) {
+            node.compile(ctx);
+        }
+
+        System.out.println("HALT");
+        ctx.emit(OpCode.HALT);
     }
 
     public Iterable<? extends ToyStatementNode> getStatements() {

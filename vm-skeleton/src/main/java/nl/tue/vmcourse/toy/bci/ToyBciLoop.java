@@ -23,8 +23,9 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
         int intRegister1 = 41;
         int intRegister2 = 1;
         while (true) {
+            System.out.println(code[pc]);
             executions++;
-            switch (code[pc]) {
+            switch (code[pc++]) {
                 case 42 -> {
                     if (executions <= JIT_COMPILATION_THRESHOLD) {
                         continue;
@@ -33,6 +34,16 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
                     return "Hello from your friendly BCI! (and your JIT: " + objRegister + ")";
                 }
                 case 43 -> pc++;
+                case OpCode.PUSH_I64 -> {
+                    pc += 8;
+                }
+                case OpCode.ADD -> {
+
+                }
+                case OpCode.HALT -> {
+                    objRegister = compiler.compileAndRun(intRegister1, intRegister2);
+                    return "Hello from your friendly BCI! (and your JIT: " + objRegister + ")";
+                }
                 // case ..
                 default -> throw new RuntimeException("TODO");
             }
