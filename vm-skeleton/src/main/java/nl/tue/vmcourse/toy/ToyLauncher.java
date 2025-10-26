@@ -85,7 +85,11 @@ public class ToyLauncher {
         Map<String, RootCallTarget> allFunctions = factory.getAllFunctions();
         if (!allFunctions.isEmpty() && allFunctions.containsKey("main")) {
             RootCallTarget mainFunction = allFunctions.get("main");
-            // TODO register builtins, initialize global scope, ...
+
+            for (RootCallTarget rc : allFunctions.values()) {
+                rc.setFunctionTable(allFunctions);
+            }
+
             return mainFunction.invoke();
         }
 
@@ -102,7 +106,7 @@ public class ToyLauncher {
         CharStream charStream = CharStreams.fromFileName(args[args.length - 1]);
         try {
             Object result = evalStream(charStream);
-            System.out.println(result);
+            // System.out.println(result);
         } catch (ToySyntaxErrorException e) {
             System.err.println(e.getMessage());
         }

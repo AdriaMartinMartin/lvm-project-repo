@@ -1,3 +1,5 @@
+function foo(a, b) { return a; }
+
 function main() {
-    2 + 3;
+    foo(1, 2, 5);
 }

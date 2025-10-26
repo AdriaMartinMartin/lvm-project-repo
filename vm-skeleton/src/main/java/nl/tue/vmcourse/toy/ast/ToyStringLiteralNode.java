@@ -1,6 +1,8 @@
 package nl.tue.vmcourse.toy.ast;
 
 import nl.tue.vmcourse.toy.bci.CompileContext;
+import nl.tue.vmcourse.toy.bci.OpCode;
+import nl.tue.vmcourse.toy.bci.value.VString;
 
 public class ToyStringLiteralNode extends ToyExpressionNode {
 
@@ -16,7 +18,8 @@ public class ToyStringLiteralNode extends ToyExpressionNode {
 
     @Override
     public void compile(CompileContext ctx) {
-
+        ctx.emit(OpCode.PUSH_K);
+        ctx.addConstant(value);
     }
 
     @Override

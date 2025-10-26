@@ -1,6 +1,7 @@
 package nl.tue.vmcourse.toy.ast;
 
 import nl.tue.vmcourse.toy.bci.CompileContext;
+import nl.tue.vmcourse.toy.bci.OpCode;
 
 public class ToyWriteLocalVariableNode extends ToyExpressionNode {
     private final ToyExpressionNode valueNode;
@@ -18,7 +19,10 @@ public class ToyWriteLocalVariableNode extends ToyExpressionNode {
 
     @Override
     public void compile(CompileContext ctx) {
-
+        // nameNode.compile(ctx); // TODO: Re-think if it's needed that the local slots should be name-accessible
+        valueNode.compile(ctx);
+        ctx.emit(OpCode.STR_K);
+        ctx.emitU16(frameSlot.shortValue());
     }
 
     @Override

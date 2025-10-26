@@ -1,18 +1,21 @@
 package nl.tue.vmcourse.toy.bci;
 
 public final class OpCode {
+
     private OpCode() {
     }
 
     public static final byte HALT = 0x00;
     public static final byte CALL = 0x70;
-    public static final byte RETURN = 0x71;
+    public static final byte RET = 0x71;
 
     // Stack operations
     public static final byte PUSH_I64 = 0x01;
     public static final byte PUSH_S = 0x02;
     public static final byte PUSH_K = 0X03;
     public static final byte POP = 0x04;
+    public static final byte POP_N = 0x05;
+    public static final byte PUSH_NULL = 0x06;
 
     // Arithmetic
     public static final byte ADD = 0x10;
@@ -37,6 +40,8 @@ public final class OpCode {
     public static final byte NOT = 0x25;
 
     // Local/args
-    public static final byte LOCAL_L = 0x30;
-    public static final byte STORE_L = 0x31;
+    public static final byte LOAD_ARG = 0x30;
+    public static final byte LOAD_L = 0x31;
+    public static final byte STR_I64 = 0x32;
+    public static final byte STR_K = 0x33;
 }

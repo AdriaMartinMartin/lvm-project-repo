@@ -24,6 +24,5 @@ public class ToyLongLiteralNode extends ToyExpressionNode {
     public void compile(CompileContext ctx) {
         ctx.emit(OpCode.PUSH_I64);
         ctx.emitI64(value);
-        System.out.println("PUSH_I64 " + value);
     }
 }

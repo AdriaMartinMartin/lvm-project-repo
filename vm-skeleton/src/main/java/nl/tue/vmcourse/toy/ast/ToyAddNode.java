@@ -18,7 +18,6 @@ public class ToyAddNode extends ToyExpressionNode {
     public void compile(CompileContext ctx) {
         leftUnboxed.compile(ctx);
         rightUnboxed.compile(ctx);
-        System.out.println("ADD");
         ctx.emit(OpCode.ADD);
     }
 

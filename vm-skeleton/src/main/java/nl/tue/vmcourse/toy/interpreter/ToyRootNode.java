@@ -4,6 +4,9 @@ import nl.tue.vmcourse.toy.lang.FrameDescriptor;
 import nl.tue.vmcourse.toy.lang.RootCallTarget;
 import nl.tue.vmcourse.toy.lang.VirtualFrame;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ToyRootNode extends ToyNode {
     private final FrameDescriptor frameDescriptor;
     private final ToyAbstractFunctionBody functionBodyNode;
@@ -24,4 +27,9 @@ public class ToyRootNode extends ToyNode {
     public Object execute(VirtualFrame frame) {
         return functionBodyNode.execute(frame);
     }
+
+    public void setFunctionTable(Map<String, RootCallTarget> tb) { functionBodyNode.setFunctionTable(tb); }
+
+    public int getArity() { return frameDescriptor.getArity(); }
+    public String getName() { return functionName; }
 }

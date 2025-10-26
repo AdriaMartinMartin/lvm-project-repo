@@ -24,13 +24,11 @@ public class ToyInvokeNode extends ToyExpressionNode {
 
     @Override
     public void compile(CompileContext ctx) {
-
-
         for (ToyExpressionNode node : toyExpressionNodes) {
             node.compile(ctx);
-
         }
 
-
+        functionNode.compile(ctx);
+        ctx.emitU16((short) toyExpressionNodes.length);
     }
 }

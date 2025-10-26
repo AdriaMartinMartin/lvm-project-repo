@@ -1,9 +1,10 @@
 package nl.tue.vmcourse.toy.ast;
 
 import nl.tue.vmcourse.toy.bci.CompileContext;
+import nl.tue.vmcourse.toy.bci.OpCode;
 
 public class ToyReadArgumentNode extends ToyExpressionNode {
-    private final int parameterCount;
+    private final Integer parameterCount;
 
     public ToyReadArgumentNode(int parameterCount) {
         this.parameterCount = parameterCount;
@@ -11,7 +12,8 @@ public class ToyReadArgumentNode extends ToyExpressionNode {
 
     @Override
     public void compile(CompileContext ctx) {
-
+        ctx.emit(OpCode.LOAD_ARG);
+        ctx.emitU16(parameterCount.shortValue());
     }
 
     @Override

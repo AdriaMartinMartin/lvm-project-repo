@@ -63,7 +63,7 @@ public final class BytecodeBuffer {
      *
      * @param v the unsigned 16-bit value to write
      */
-    public void emitU16(int v) {
+    public void emitU16(short v) {
         out.write(v & 0xFF);
         out.write((v >>> 8) & 0xFF);
     }

@@ -11,6 +11,8 @@ public class FrameDescriptor {
         return new Builder();
     }
 
+    public int getArity() { return slotUids; }
+
     public static class Builder {
 
         private final FrameDescriptor descriptor = new FrameDescriptor();

@@ -20,8 +20,8 @@ public class ToyBlockNode extends ToyStatementNode {
             node.compile(ctx);
         }
 
-        System.out.println("HALT");
-        ctx.emit(OpCode.HALT);
+        ctx.emit(OpCode.PUSH_NULL);
+        ctx.emit(OpCode.RET);
     }
 
     public Iterable<? extends ToyStatementNode> getStatements() {

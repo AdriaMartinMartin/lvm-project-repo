@@ -1,6 +1,7 @@
 package nl.tue.vmcourse.toy.ast;
 
 import nl.tue.vmcourse.toy.bci.CompileContext;
+import nl.tue.vmcourse.toy.bci.OpCode;
 
 public class ToyReturnNode extends ToyStatementNode {
     private final ToyExpressionNode valueNode;
@@ -11,7 +12,8 @@ public class ToyReturnNode extends ToyStatementNode {
 
     @Override
     public void compile(CompileContext ctx) {
-
+        valueNode.compile(ctx);
+        ctx.emit(OpCode.RET);
     }
 
     @Override

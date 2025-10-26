@@ -2,6 +2,8 @@ package nl.tue.vmcourse.toy.lang;
 
 import nl.tue.vmcourse.toy.interpreter.ToyRootNode;
 
+import java.util.Map;
+
 public class RootCallTarget {
     private final ToyRootNode rootNode;
 
@@ -14,4 +16,8 @@ public class RootCallTarget {
         return rootNode.execute(frame);
     }
 
+    public void setFunctionTable(Map<String, RootCallTarget> tb) { rootNode.setFunctionTable(tb); }
+
+    public int getArity() { return rootNode.getArity(); }
+    public String getName() { return rootNode.getName(); }
 }
