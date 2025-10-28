@@ -1,6 +1,7 @@
 package nl.tue.vmcourse.toy.ast;
 
 import nl.tue.vmcourse.toy.bci.CompileContext;
+import nl.tue.vmcourse.toy.bci.OpCode;
 
 public class ToyMulNode extends ToyExpressionNode {
     private final ToyExpressionNode leftUnboxed;
@@ -22,6 +23,8 @@ public class ToyMulNode extends ToyExpressionNode {
 
     @Override
     public void compile(CompileContext ctx) {
-
+        leftUnboxed.compile(ctx);
+        rightUnboxed.compile(ctx);
+        ctx.emit(OpCode.MUL);
     }
 }

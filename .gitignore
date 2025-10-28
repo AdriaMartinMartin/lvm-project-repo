@@ -3,3 +3,4 @@
 *.jar
 execution_log*
 processed_files.txt
+*.zip

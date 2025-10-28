@@ -5,6 +5,7 @@ import nl.tue.vmcourse.toy.bci.value.VString;
 import nl.tue.vmcourse.toy.bci.value.Value;
 
 import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class Stack {
     private final ArrayDeque<Value> stack = new ArrayDeque<>();
@@ -12,6 +13,8 @@ public class Stack {
     void push(Value v) { stack.push(v); }
     Value pop() { return stack.pop(); }
     Value peek() { return stack.peek(); }
+    final Deque<Value> view() { return stack; }
+    public void clear() { stack.clear(); }
 
     // Type-based push/retrieve
     void pushLong(long l) { push(new VLong(l));}
@@ -20,4 +23,5 @@ public class Stack {
     public boolean isEmpty() {
         return stack.isEmpty();
     }
+
 }

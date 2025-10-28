@@ -1,6 +1,8 @@
 package nl.tue.vmcourse.toy;
 
-import com.ibm.icu.impl.Assert;
+import nl.tue.vmcourse.toy.bci.BciDisassembler;
+import nl.tue.vmcourse.toy.bci.BciTracer;
+import nl.tue.vmcourse.toy.builtins.BuiltinBuilder;
 import nl.tue.vmcourse.toy.interpreter.ToySyntaxErrorException;
 import nl.tue.vmcourse.toy.lang.RootCallTarget;
 import nl.tue.vmcourse.toy.interpreter.ToyNodeFactory;
@@ -10,13 +12,13 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.misc.Interval;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Map;
-import java.util.StringJoiner;
 
 public class ToyLauncher {
 
     public static final boolean JIT_ENABLED = System.getProperty("toy.Jit") != null;
+    public static final boolean DUMP_BCI = System.getProperty("toy.DumpBCI") != null;
+    public static final boolean TRACE_BCI = System.getProperty("toy.TraceBCI") != null;
     public static final boolean IC_ENABLED;
     public static final boolean ROPES_ENABLED;
     public static final boolean ARRAYS_ENABLED;
@@ -85,9 +87,14 @@ public class ToyLauncher {
         Map<String, RootCallTarget> allFunctions = factory.getAllFunctions();
         if (!allFunctions.isEmpty() && allFunctions.containsKey("main")) {
             RootCallTarget mainFunction = allFunctions.get("main");
+            for (RootCallTarget rc : allFunctions.values()) if (DUMP_BCI) BciDisassembler.dump(rc, System.out);
+
+            BuiltinBuilder.build(allFunctions);
+
 
             for (RootCallTarget rc : allFunctions.values()) {
                 rc.setFunctionTable(allFunctions);
+                if (TRACE_BCI) rc.setTracer(BciTracer.stderr(System.out));
             }
 
             return mainFunction.invoke();
@@ -99,7 +106,7 @@ public class ToyLauncher {
     public static void main(String[] args) throws IOException {
         // TODO: change this when you will need to provide more arguments
         if (args.length < 1) {
-            System.out.println("Usage: toy [file]");
+            System.out.println("Usage: toy [options] [file]");
             System.exit(1);
         }
         // TODO, ignores other args for now.

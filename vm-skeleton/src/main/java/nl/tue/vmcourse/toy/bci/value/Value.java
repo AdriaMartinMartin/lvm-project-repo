@@ -10,5 +10,12 @@ public interface Value {
      * @throws UnsupportedOperationException if the types cannot be added.
      */
     Value add(Value r);
+    Value sub(Value r);
+    Value mul(Value r);
+    Value neg();
+    Value lt(Value r);
+    Value eq(Value r);
+    String toString();
     void print();
+
 }

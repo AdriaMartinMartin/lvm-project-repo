@@ -1,5 +1,5 @@
-function foo(a, b) { return a; }
+function foo() { return; }
 
 function main() {
-    foo(1, 2, 5);
+    println(-new());
 }

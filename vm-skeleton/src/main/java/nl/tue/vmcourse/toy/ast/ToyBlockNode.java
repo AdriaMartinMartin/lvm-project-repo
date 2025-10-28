@@ -16,22 +16,20 @@ public class ToyBlockNode extends ToyStatementNode {
 
     @Override
     public void compile(CompileContext ctx) {
-        for (ToyStatementNode node : statements) {
-            node.compile(ctx);
-        }
-
-        ctx.emit(OpCode.PUSH_NULL);
-        ctx.emit(OpCode.RET);
+        if (statements != null)
+            for (ToyStatementNode node : statements) {
+                node.compile(ctx);
+            }
     }
 
     public Iterable<? extends ToyStatementNode> getStatements() {
         return List.of(statements);
     }
 
-    public String printTree(String functionName) {
+    @Override
+    public String toString() {
         return "ToyBlockNode{" +
-                "functionName=" + functionName +
-                ", statements=" + Arrays.toString(statements) +
-                '}';
+            "statements=" + Arrays.toString(statements) +
+            '}';
     }
 }

@@ -1,10 +1,12 @@
 package nl.tue.vmcourse.toy.interpreter;
 
+import nl.tue.vmcourse.toy.bci.BciTracer;
 import nl.tue.vmcourse.toy.lang.FrameDescriptor;
 import nl.tue.vmcourse.toy.lang.RootCallTarget;
 import nl.tue.vmcourse.toy.lang.VirtualFrame;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ToyRootNode extends ToyNode {
@@ -32,4 +34,8 @@ public class ToyRootNode extends ToyNode {
 
     public int getArity() { return frameDescriptor.getArity(); }
     public String getName() { return functionName; }
+    public final byte[] getCode() { return functionBodyNode.getCode(); }
+    public final List<Object> getPool() { return functionBodyNode.getPool(); }
+
+    public void setTracer(BciTracer stderr) { functionBodyNode.setTracer(stderr); }
 }

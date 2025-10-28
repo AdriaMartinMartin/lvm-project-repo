@@ -58,6 +58,11 @@ public final class CompileContext {
     public static short undoU16(byte[] code, int pc) {
         return ByteBuffer.wrap(code, pc, 2).order(ByteOrder.LITTLE_ENDIAN).getShort();
     }
+    public static int undoI32(byte[] code, int pc) {
+        return ByteBuffer.wrap(code, pc, 4).order(ByteOrder.LITTLE_ENDIAN).getInt();
+    }
+
+    public void patchI32(int pos, int value) { code.patchI32(pos, value);}
 
     /**
      * Gets the finalized constant pool. The VM interpreter will need

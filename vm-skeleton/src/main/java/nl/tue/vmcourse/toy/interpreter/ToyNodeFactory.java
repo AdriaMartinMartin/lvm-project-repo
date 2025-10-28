@@ -11,10 +11,9 @@ import nl.tue.vmcourse.toy.bci.*;
 import nl.tue.vmcourse.toy.lang.FrameDescriptor;
 import nl.tue.vmcourse.toy.lang.RootCallTarget;
 import org.antlr.v4.runtime.Token;
+import nl.tue.vmcourse.toy.builtins.BuiltinBuilder;
 
 public class ToyNodeFactory {
-
-    // TODO this could be a config flag, not a constant.
     private static final boolean DUMP_AST = System.getProperty("toy.DumpAST") != null;
 
     public ToyExpressionNode createMinExpression(ToyExpressionNode exp) {
@@ -75,6 +74,9 @@ public class ToyNodeFactory {
 
         functionStartPos = nameToken.getStartIndex();
         functionName = asString(nameToken, false);
+
+        if (BuiltinBuilder.reservedName(functionName)) throw new RuntimeException("Cannot define a function with same name as a builtin.");
+
         functionBodyStartPos = bodyStartToken.getStartIndex();
         frameDescriptorBuilder = FrameDescriptor.newBuilder();
         methodNodes = new ArrayList<>();
@@ -103,14 +105,15 @@ public class ToyNodeFactory {
             final ToyStatementNode methodBlock = finishBlock(methodNodes);
             assert lexicalScope == null : "Wrong scoping of blocks in parser";
 
-            final ToyAbstractFunctionBody functionBodyNode = AstToBciAssembler.build(methodBlock);
+            final ToyFunctionBodyNode functionBody = new ToyFunctionBodyNode(methodBlock);
+            final ToyAbstractFunctionBody functionBodyNode = AstToBciAssembler.build(functionBody);
 
             // TODO remove this println (otherwise all tests will fail...)
             if (DUMP_AST) {
                 System.out.println("+++++");
                 System.out.println("+++++ AST for " + functionName);
                 System.out.println("+++++");
-                System.out.println(((ToyBlockNode)methodBlock).printTree(functionName));
+                System.out.println(functionBody.printTree(functionName));
                 System.out.println("+++++");
             }
 

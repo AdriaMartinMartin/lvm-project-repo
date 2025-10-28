@@ -1,9 +1,6 @@
 package nl.tue.vmcourse.toy.bci;
 
-import nl.tue.vmcourse.toy.bci.value.ConstantTranslator;
-import nl.tue.vmcourse.toy.bci.value.VLong;
-import nl.tue.vmcourse.toy.bci.value.VString;
-import nl.tue.vmcourse.toy.bci.value.Value;
+import nl.tue.vmcourse.toy.bci.value.*;
 import nl.tue.vmcourse.toy.interpreter.ToyAbstractFunctionBody;
 import nl.tue.vmcourse.toy.lang.RootCallTarget;
 import nl.tue.vmcourse.toy.lang.VirtualFrame;
@@ -20,21 +17,47 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
     private static final int JIT_COMPILATION_THRESHOLD = 3;
     private static final int LOCALS_SLOTS = 16;
     private static final Map<Class<?>, ConstantTranslator> TRANSLATOR_MAP = new HashMap<>();
-    private Map<String, RootCallTarget> functionTable = new HashMap<>();
+
+    private static void checkAddr(int target, int codeLen) {
+        if (target < 0 || target > codeLen) {
+            throw new RuntimeException("Jump target out of range: " + target + " (code len=" + codeLen + ")");
+        }
+    }
 
     static {
         TRANSLATOR_MAP.put(Long.class, item -> new VLong((Long) item));
         TRANSLATOR_MAP.put(String.class, item -> new VString((String) item));
+        TRANSLATOR_MAP.put(Boolean.class, item -> new VBool((Boolean) item));
         TRANSLATOR_MAP.put(VLong.class, item -> (Value) item);
         TRANSLATOR_MAP.put(VString.class, item -> (Value) item);
+        TRANSLATOR_MAP.put(VBool.class, item -> (Value) item);
+        TRANSLATOR_MAP.put(VObject.class, item -> (Value) item);
+        TRANSLATOR_MAP.put(null, item -> Value.NULL);
+        TRANSLATOR_MAP.put(VNull.class, item -> Value.NULL);
+        TRANSLATOR_MAP.put(Map.class, item -> {
+            Map<?, ?> m = (Map<?, ?>) item;
+            VObject o = new VObject();
+            for (Map.Entry<?, ?> e : m.entrySet()) {
+                String k = (e.getKey() instanceof Value) ? VObject.toKeyString((Value) e.getKey()) : String.valueOf(e.getKey());
+                Value v = TRANSLATOR_MAP.get(e.getValue().getClass()).box(e.getValue());
+                o.set(k, v);
+            }
+
+            return o;
+        });
     }
 
-    private final Locals locals = new Locals(LOCALS_SLOTS);
-    private final Stack stack = new Stack();
+    private Map<String, RootCallTarget> functionTable = new HashMap<>();
     private final List<Object> constantPool;
     private final byte[] code;
 
     private final JITCompiler compiler;
+
+    public BciTracer tracer;
+
+    public void setTracer(BciTracer t) {
+        tracer = t;
+    }
 
     public ToyBciLoop(byte[] code, List<Object> pool) {
         this.code = code;
@@ -42,13 +65,24 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
         this.compiler = new JITCompiler();
     }
 
-    private int opPUSH_I64(int pc) {
+    @Override
+    public final List<Object> getPool() {
+        return constantPool;
+    }
+
+    @Override
+    public final byte[] getCode() {
+        return code;
+    }
+
+
+    private int opPUSH_I64(int pc, Stack stack) {
         long imm = ByteBuffer.wrap(code, pc, 8).order(ByteOrder.LITTLE_ENDIAN).getLong();
         stack.pushLong(imm);
         return pc + 8;
     }
 
-    private int opPUSH_K(int pc) {
+    private int opPUSH_K(int pc, Stack stack) {
         short idx = CompileContext.undoU16(code, pc);
         Object rawConstant = constantPool.get(idx);
 
@@ -62,9 +96,9 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
         return pc + 2;
     }
 
-    private void opADD() {
-        Value l = stack.pop();
+    private void opADD(Stack stack) {
         Value r = stack.pop();
+        Value l = stack.pop();
 
         try {
             stack.push(l.add(r));
@@ -73,17 +107,90 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
         }
     }
 
-    private int  opSTR_K(int pc) {
+    private void opSUB(Stack stack) {
+        Value r = stack.pop();
+        Value l = stack.pop();
+
+        try {
+            stack.push(l.sub(r));
+        } catch (UnsupportedOperationException e) {
+            throw new RuntimeException("Type error: " + e.getMessage());
+        }
+    }
+
+
+    private void opMUL(Stack stack) {
+        Value r = stack.pop();
+        Value l = stack.pop();
+
+        try {
+            stack.push(l.mul(r));
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Type error: " + e.getMessage());
+        }
+    }
+
+    private void opNEG(Stack stack) {
+        Value v = stack.pop().neg();
+        stack.push(v);
+    }
+
+    private int opJMP(int pc) {
+        int addr = CompileContext.undoI32(code, pc);
+        checkAddr(addr, code.length);
+        return addr;
+    }
+
+    private int opJNE(int pc, Stack stack) {
+        Value v = stack.pop();
+
+        int addr = CompileContext.undoI32(code, pc);
+        checkAddr(addr, code.length);
+
+        if (!(v instanceof VBool))
+            throw new RuntimeException("Type error: operation \"if\" not defined for " + v.getClass().getSimpleName() + v);
+
+        if (!((VBool) v).v()) {
+            checkAddr(addr, code.length);
+            return addr;
+        }
+
+        return pc + 4;
+    }
+
+    private void opEQ(Stack stack) {
+        Value r = stack.pop();
+        Value l = stack.pop();
+
+        try {
+            stack.push(l.eq(r));
+        } catch (UnsupportedOperationException e) {
+            throw new RuntimeException("Type error: " + e.getMessage());
+
+        }
+    }
+
+    private void opLT(Stack stack) {
+        Value r = stack.pop();
+        Value l = stack.pop();
+
+        try {
+            stack.push(l.lt(r));
+        } catch (UnsupportedOperationException e) {
+            throw new RuntimeException("Type error: " + e.getMessage());
+
+        }
+    }
+
+    private int opSTR_K(int pc, Stack stack, Locals locals) {
         Value value = stack.pop();
         short slot = CompileContext.undoU16(code, pc);
-        System.out.println(slot);
         locals.set(slot, value);
         return pc + 2;
     }
 
-    private int opLOAD_ARG(int pc, VirtualFrame frame) {
+    private int opLOAD_ARG(int pc, VirtualFrame frame, Stack stack) {
         short idx = CompileContext.undoU16(code, pc);
-        System.out.println(idx);
 
         Object rawObject = frame.get(idx);
 
@@ -96,18 +203,41 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
         return pc + 2;
     }
 
-    private int opLOAD_L(int pc) {
+    private int opLOAD_L(int pc, Stack stack, Locals locals) {
         short slot = CompileContext.undoU16(code, pc);
-        System.out.println(slot);
         stack.push(locals.get(slot));
 
         return pc + 2;
     }
 
-    private int opCALL(int pc) {
+    private void opSETPROP(Stack stack) {
+        Value v = stack.pop();
+        Value k = stack.pop();
+        VObject o;
+
+        try {
+            o = (VObject) stack.pop();
+            o.set(k, v);
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Type error, accessing is only for Objects: " + e.getMessage());
+        }
+    }
+
+    private void opGETPROP(Stack stack) {
+        Value k = stack.pop();
+        VObject o;
+
+        try {
+            o = (VObject) stack.pop();
+            stack.push(o.get(k));
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Type error, accessing is only for Objects: " + e.getMessage());
+        }
+    }
+
+    private int opCALL(int pc, Stack stack) {
         int poolIdx = CompileContext.undoU16(code, pc);
         int argp = CompileContext.undoU16(code, pc + 2);
-        System.out.println(" " + poolIdx);
 
         if (!(constantPool.get(poolIdx) instanceof String))
             throw new RuntimeException("Bad type for function call. Expected: <String>, you provided: " + constantPool.get(poolIdx).getClass());
@@ -124,7 +254,8 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
 
         if (k > 0)
             while (k-- > 0) stack.pop();
-        else if (k < 0) throw new RuntimeException("Function " + target.getName() + " expects " + argc + " args, provided only " + argp);
+        else if (k < 0)
+            throw new RuntimeException("Function " + target.getName() + " expects " + argc + " args, provided only " + argp);
 
         for (int i = argc - 1; i >= 0; i--) {
             args[i] = stack.pop();
@@ -140,13 +271,21 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
 
     public Object execute(VirtualFrame frame) {
         int pc = 0;
+
+        final Locals locals = new Locals(LOCALS_SLOTS);
+        final Stack stack = new Stack();
+
 //        int executions = 0;
 //        Object objRegister = null;
 //        int intRegister1 = 41;
 //        int intRegister2 = 1;
         while (true) {
+            int addr = pc;
+            byte op = code[pc++];
+            if (tracer != null) tracer.onExec(addr, op, stack.view());
+
 //            executions++;
-            switch (code[pc++]) {
+            switch (op) {
 //                case 42 -> {
 //                    if (executions <= JIT_COMPILATION_THRESHOLD) {
 //                        continue;
@@ -154,53 +293,25 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
 //                    objRegister = compiler.compileAndRun(intRegister1, intRegister2);
 //                    return "Hello from your friendly BCI! (and your JIT: " + objRegister + ")";
 //                }
-                case OpCode.PUSH_I64 -> {
-                    System.out.println("PUSH_I64");
-                    pc = opPUSH_I64(pc);
-                }
-                case OpCode.PUSH_K -> {
-                    System.out.println("PUSH_K");
-                    pc = opPUSH_K(pc);
-                }
-                case OpCode.PUSH_NULL -> {
-                    System.out.println("PUSH_NULL");
-                    stack.push(Value.NULL);
-                }
-                case OpCode.ADD -> {
-                    System.out.println("ADD");
-                    opADD();
-                }
-                case OpCode.LOAD_ARG -> {
-                    System.out.print("LOAD_ARG ");
-                    pc = opLOAD_ARG(pc, frame);
-                }
-                case OpCode.LOAD_L -> {
-                    System.out.print("LOAD_L ");
-                    pc = opLOAD_L(pc);
-                }
-                case OpCode.STR_K -> {
-                    System.out.print("STR_K ");
-                    pc = opSTR_K(pc);
-                }
-                case OpCode.CALL -> {
-                    System.out.print("CALL");
-                    pc = opCALL(pc);
-                }
+                case OpCode.PUSH_I64 -> pc = opPUSH_I64(pc, stack);
+                case OpCode.PUSH_K -> pc = opPUSH_K(pc, stack);
+                case OpCode.PUSH_NULL -> stack.push(Value.NULL);
+                case OpCode.ADD -> opADD(stack);
+                case OpCode.SUB -> opSUB(stack);
+                case OpCode.MUL -> opMUL(stack);
+                case OpCode.NEG -> opNEG(stack);
+                case OpCode.JMP -> pc = opJMP(pc);
+                case OpCode.JNE -> pc = opJNE(pc, stack);
+                case OpCode.LT -> opLT(stack);
+                case OpCode.EQ -> opEQ(stack);
+                case OpCode.LOAD_ARG -> pc = opLOAD_ARG(pc, frame, stack);
+                case OpCode.LOAD_L -> pc = opLOAD_L(pc, stack, locals);
+                case OpCode.STR_K -> pc = opSTR_K(pc, stack, locals);
+                case OpCode.SETPROP -> opSETPROP(stack);
+                case OpCode.GETPROP -> opGETPROP(stack);
+                case OpCode.CALL -> pc = opCALL(pc, stack);
                 case OpCode.RET -> {
-                    System.out.print("RET ");
-                    Value v = stack.isEmpty() ? null : stack.pop();
-
-                    if (v != null ) {
-                        v.print();
-                    } else {
-                        System.out.println("");
-                    }
-
-                    return v;
-                }
-                case OpCode.HALT -> {
-                    System.out.println("HALT");
-                    return null;
+                    return stack.isEmpty() ? Value.NULL : stack.pop();
                 }
                 // case ..
                 default -> throw new RuntimeException("TODO");

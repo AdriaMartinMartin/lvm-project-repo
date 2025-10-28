@@ -11,7 +11,7 @@ public class ToyParenExpressionNode extends ToyExpressionNode {
 
     @Override
     public void compile(CompileContext ctx) {
-
+        if (expressionNode != null) expressionNode.compile(ctx);
     }
 
     @Override

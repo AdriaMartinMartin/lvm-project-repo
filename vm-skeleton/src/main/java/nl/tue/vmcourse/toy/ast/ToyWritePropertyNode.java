@@ -1,6 +1,7 @@
 package nl.tue.vmcourse.toy.ast;
 
 import nl.tue.vmcourse.toy.bci.CompileContext;
+import nl.tue.vmcourse.toy.bci.OpCode;
 
 public class ToyWritePropertyNode extends ToyExpressionNode {
     private final ToyExpressionNode receiverNode;
@@ -16,7 +17,12 @@ public class ToyWritePropertyNode extends ToyExpressionNode {
 
     @Override
     public void compile(CompileContext ctx) {
-
+        if (receiverNode != null) {
+            receiverNode.compile(ctx);
+            if (nameNode != null) nameNode.compile(ctx); else ctx.emit(OpCode.PUSH_NULL);
+            if (valueNode != null) valueNode.compile(ctx); else ctx.emit(OpCode.PUSH_NULL);
+            ctx.emit(OpCode.SETPROP);
+        }
     }
 
     @Override

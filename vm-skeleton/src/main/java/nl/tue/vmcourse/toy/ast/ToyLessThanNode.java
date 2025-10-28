@@ -1,6 +1,7 @@
 package nl.tue.vmcourse.toy.ast;
 
 import nl.tue.vmcourse.toy.bci.CompileContext;
+import nl.tue.vmcourse.toy.bci.OpCode;
 
 public class ToyLessThanNode extends ToyExpressionNode {
     private final ToyExpressionNode leftUnboxed;
@@ -14,7 +15,13 @@ public class ToyLessThanNode extends ToyExpressionNode {
 
     @Override
     public void compile(CompileContext ctx) {
+        if (leftUnboxed == null) ctx.emit(OpCode.PUSH_NULL);
+        else leftUnboxed.compile(ctx);
 
+        if (rightUnboxed == null) ctx.emit(OpCode.PUSH_NULL);
+        else rightUnboxed.compile(ctx);
+
+        ctx.emit(OpCode.LT);
     }
 
     @Override

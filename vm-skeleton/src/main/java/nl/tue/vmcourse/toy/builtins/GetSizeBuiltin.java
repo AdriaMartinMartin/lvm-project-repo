@@ -1,25 +1,23 @@
 package nl.tue.vmcourse.toy.builtins;
 
 import nl.tue.vmcourse.toy.bci.BciTracer;
-import nl.tue.vmcourse.toy.bci.OpCode;
-import nl.tue.vmcourse.toy.bci.value.Value;
+import nl.tue.vmcourse.toy.bci.value.VLong;
+import nl.tue.vmcourse.toy.bci.value.VObject;
 import nl.tue.vmcourse.toy.interpreter.ToyAbstractFunctionBody;
 import nl.tue.vmcourse.toy.lang.RootCallTarget;
 import nl.tue.vmcourse.toy.lang.VirtualFrame;
+import nl.tue.vmcourse.toy.bci.OpCode;
 
 import java.util.List;
 import java.util.Map;
 
-public class PrintBuiltin extends ToyAbstractFunctionBody {
-
+public class GetSizeBuiltin extends ToyAbstractFunctionBody {
     @Override
     public Object execute(VirtualFrame frame) {
-        Object arg = frame.get(0);
+        assert frame.size() == 1 && frame.get(0) instanceof VObject;
 
-        if (!(arg instanceof Value)) throw new RuntimeException("Unexpected argument type, should be <String> but got " + arg.getClass().getSimpleName());
-
-        ((Value) arg).print();
-        return null;
+        VObject arg = (VObject) frame.get(0);
+        return new VLong(arg.size());
     }
 
     @Override
@@ -37,6 +35,7 @@ public class PrintBuiltin extends ToyAbstractFunctionBody {
 
     @Override
     public void setTracer(BciTracer stderr) {
-        stderr.onExec(0xFFFF, OpCode.PRINTLN, null);
+        stderr.onExec(0xFFFF, OpCode.GETSIZE, null);
+
     }
 }

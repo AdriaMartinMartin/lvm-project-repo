@@ -3,6 +3,8 @@ package nl.tue.vmcourse.toy.ast;
 import nl.tue.vmcourse.toy.bci.CompileContext;
 import nl.tue.vmcourse.toy.bci.OpCode;
 
+import java.util.Objects;
+
 
 public class ToyAddNode extends ToyExpressionNode {
     private final ToyExpressionNode leftUnboxed;
@@ -10,8 +12,8 @@ public class ToyAddNode extends ToyExpressionNode {
 
     public ToyAddNode(ToyExpressionNode leftUnboxed, ToyExpressionNode rightUnboxed) {
         super();
-        this.leftUnboxed = leftUnboxed;
-        this.rightUnboxed = rightUnboxed;
+        this.leftUnboxed = Objects.requireNonNull(leftUnboxed);
+        this.rightUnboxed = Objects.requireNonNull(rightUnboxed);
     }
 
     @Override

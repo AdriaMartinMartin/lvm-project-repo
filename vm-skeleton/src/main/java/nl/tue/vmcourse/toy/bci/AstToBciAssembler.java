@@ -1,14 +1,9 @@
 package nl.tue.vmcourse.toy.bci;
 
-import com.ibm.icu.impl.Pair;
 import nl.tue.vmcourse.toy.ast.ToyStatementNode;
-import nl.tue.vmcourse.toy.bci.value.Value;
 import nl.tue.vmcourse.toy.interpreter.ToyAbstractFunctionBody;
-import nl.tue.vmcourse.toy.lang.RootCallTarget;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class AstToBciAssembler {
 

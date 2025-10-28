@@ -1,6 +1,7 @@
 package nl.tue.vmcourse.toy.ast;
 
 import nl.tue.vmcourse.toy.bci.CompileContext;
+import nl.tue.vmcourse.toy.bci.OpCode;
 
 public class ToyReadPropertyNode extends ToyExpressionNode {
     private final ToyExpressionNode receiverNode;
@@ -14,7 +15,11 @@ public class ToyReadPropertyNode extends ToyExpressionNode {
 
     @Override
     public void compile(CompileContext ctx) {
+        assert receiverNode != null && receiverNode instanceof ToyReadLocalVariableNode;
 
+        receiverNode.compile(ctx);
+        if (nameNode != null) nameNode.compile(ctx); else ctx.emit(OpCode.PUSH_NULL);
+        ctx.emit(OpCode.GETPROP);
     }
 
     @Override

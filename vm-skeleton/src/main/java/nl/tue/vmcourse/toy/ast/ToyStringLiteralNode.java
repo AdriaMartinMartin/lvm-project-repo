@@ -2,14 +2,15 @@ package nl.tue.vmcourse.toy.ast;
 
 import nl.tue.vmcourse.toy.bci.CompileContext;
 import nl.tue.vmcourse.toy.bci.OpCode;
-import nl.tue.vmcourse.toy.bci.value.VString;
+
+import java.util.Objects;
 
 public class ToyStringLiteralNode extends ToyExpressionNode {
 
     private final String value;
 
     public ToyStringLiteralNode(String value) {
-        this.value = value;
+        this.value = Objects.requireNonNull(value);
     }
 
     public String getValue() {

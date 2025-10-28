@@ -12,14 +12,18 @@ public class ToyReturnNode extends ToyStatementNode {
 
     @Override
     public void compile(CompileContext ctx) {
-        valueNode.compile(ctx);
+        if (valueNode != null) {
+            valueNode.compile(ctx);
+        } else {
+            ctx.emit(OpCode.PUSH_NULL);
+        }
         ctx.emit(OpCode.RET);
     }
 
     @Override
     public String toString() {
         return "ToyReturnNode{" +
-                "valueNode=" + valueNode +
-                '}';
+            "valueNode=" + valueNode +
+            '}';
     }
 }

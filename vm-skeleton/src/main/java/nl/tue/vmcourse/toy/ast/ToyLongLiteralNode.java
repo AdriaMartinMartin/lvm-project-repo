@@ -11,8 +11,6 @@ public class ToyLongLiteralNode extends ToyExpressionNode {
         this.value = value;
     }
 
-
-
     @Override
     public String toString() {
         return "ToyLongLiteralNode{" +

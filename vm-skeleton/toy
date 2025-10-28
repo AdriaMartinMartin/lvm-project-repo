@@ -22,6 +22,8 @@ function display_help {
   echo '   -string-ropes       Enable String Ropes'
   echo '   -array-strategies   Enable Array Storage Strategies'
   echo '   -dump-ast           Shows the AST tree generated'
+  echo '   -dump-bci           Show the pre-compiled byte code per function'
+  echo '   -trace-bci          Show the runtime byte codes executed'
   echo ''
   echo ' Examples:'
   echo '   toy -jit foo.sl'
@@ -50,6 +52,10 @@ if [ -e "$JAVA_HOME/bin/java" ]; then
             JAVA_ARGS+=("-Dtoy.ArrayStrategies") ;;
         -dump-ast)
             JAVA_ARGS+=("-Dtoy.DumpAST") ;;
+        -dump-bci)
+            JAVA_ARGS+=("-Dtoy.DumpBCI") ;;
+        -trace-bci)
+            JAVA_ARGS+=("-Dtoy.TraceBCI") ;;
         *)
             PROGRAM_ARGS+=("$opt") ;;
       esac

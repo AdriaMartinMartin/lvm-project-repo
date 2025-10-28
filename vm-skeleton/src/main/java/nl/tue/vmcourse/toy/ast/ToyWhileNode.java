@@ -1,6 +1,7 @@
 package nl.tue.vmcourse.toy.ast;
 
 import nl.tue.vmcourse.toy.bci.CompileContext;
+import nl.tue.vmcourse.toy.bci.OpCode;
 
 public class ToyWhileNode extends ToyStatementNode {
     private final ToyExpressionNode conditionNode;
@@ -13,7 +14,21 @@ public class ToyWhileNode extends ToyStatementNode {
 
     @Override
     public void compile(CompileContext ctx) {
+        assert conditionNode != null && bodyNode != null;
 
+        final int startAddr = ctx.position();
+
+        conditionNode.compile(ctx);
+
+        ctx.emit(OpCode.JNE);
+        final int patchJne = ctx.position();
+        ctx.emitI32(0);
+
+        bodyNode.compile(ctx);
+        ctx.emit(OpCode.JMP);
+        ctx.emitI32(startAddr);
+
+        ctx.patchI32(patchJne, ctx.position());
     }
 
     @Override

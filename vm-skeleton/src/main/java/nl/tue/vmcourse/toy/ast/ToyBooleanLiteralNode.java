@@ -1,6 +1,7 @@
 package nl.tue.vmcourse.toy.ast;
 
 import nl.tue.vmcourse.toy.bci.CompileContext;
+import nl.tue.vmcourse.toy.bci.OpCode;
 
 public class ToyBooleanLiteralNode extends ToyExpressionNode {
     private final boolean value;
@@ -18,6 +19,7 @@ public class ToyBooleanLiteralNode extends ToyExpressionNode {
 
     @Override
     public void compile(CompileContext ctx) {
-
+        ctx.emit(OpCode.PUSH_K);
+        ctx.addConstant(value);
     }
 }

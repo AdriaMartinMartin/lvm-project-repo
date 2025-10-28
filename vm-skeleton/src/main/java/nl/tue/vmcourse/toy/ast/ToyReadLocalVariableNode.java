@@ -3,12 +3,14 @@ package nl.tue.vmcourse.toy.ast;
 import nl.tue.vmcourse.toy.bci.CompileContext;
 import nl.tue.vmcourse.toy.bci.OpCode;
 
+import java.util.Objects;
+
 public class ToyReadLocalVariableNode extends ToyExpressionNode {
     private final Integer frameSlot;
 
     public ToyReadLocalVariableNode(Integer frameSlot) {
         super();
-        this.frameSlot = frameSlot;
+        this.frameSlot = Objects.requireNonNull(frameSlot);
     }
 
     @Override

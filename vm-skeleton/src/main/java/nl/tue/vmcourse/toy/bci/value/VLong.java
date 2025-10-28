@@ -21,7 +21,44 @@ public final class VLong implements Value {
     }
 
     @Override
+    public Value sub(Value r) {
+        if (r instanceof VLong) {
+            return new VLong(v - ((VLong) r).v());
+        } else throw new RuntimeException("Type error: operation \"-\" not defined for VLong " + v +  ", " + r.getClass().getSimpleName() + r);
+    }
+
+    @Override
+    public Value mul(Value r) {
+        if (r instanceof VLong) return new VLong(v * ((VLong) r).v());
+        throw new RuntimeException("Cannot multiply VLong to " + r.getClass().getSimpleName());
+    }
+
+    @Override
+    public Value neg() {
+        return new VLong(-v);
+    }
+
+    @Override
+    public Value lt(Value r) {
+        if (r instanceof VLong) return new VBool(v < ((VLong) r).v());
+        throw new RuntimeException("Cannot do less than operation between VLong and " + r.getClass().getSimpleName());
+    }
+
+    @Override
+    public Value eq(Value r) {
+        if (r instanceof VLong)
+            return new VBool(v == ((VLong) r).v());
+
+        return new VBool(false);
+    }
+
+    @Override
     public void print() {
         System.out.println(v);
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(v);
     }
 }

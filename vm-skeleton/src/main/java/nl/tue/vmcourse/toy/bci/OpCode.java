@@ -1,11 +1,9 @@
 package nl.tue.vmcourse.toy.bci;
 
 public final class OpCode {
-
     private OpCode() {
     }
 
-    public static final byte HALT = 0x00;
     public static final byte CALL = 0x70;
     public static final byte RET = 0x71;
 
@@ -32,7 +30,7 @@ public final class OpCode {
 
     // Control flow, comparisons...
     public static final byte JMP = 0x20;
-    public static final byte JMF = 0x21;
+    public static final byte JNE = 0x21;
 
     public static final byte LT = 0x22;
     public static final byte LE = 0x23;
@@ -44,4 +42,41 @@ public final class OpCode {
     public static final byte LOAD_L = 0x31;
     public static final byte STR_I64 = 0x32;
     public static final byte STR_K = 0x33;
+
+    // VObject set/get
+    public static final byte SETPROP = 0x40;
+    public static final byte GETPROP = 0x41;
+
+    // Builtin, just trace and dump purposes
+    public static final byte PRINTLN = 0x50;
+    public static final byte NEW = 0x51;
+    public static final byte GETSIZE = 0x52;
+
+
+    public static Object nameOf(byte opcode) {
+        return switch (opcode) {
+            case CALL -> "CALL";
+            case RET -> "RET";
+            case PUSH_I64 -> "PUSH_I64";
+            case PUSH_K -> "PUSH_K";
+            case PUSH_NULL -> "PUSH_NULL";
+            case ADD -> "ADD";
+            case SUB -> "SUB";
+            case MUL -> "MUL";
+            case NEG -> "NEG";
+            case JMP -> "JMP";
+            case JNE -> "JNE";
+            case LT -> "LT";
+            case EQ -> "EQ";
+            case LOAD_ARG -> "LOAD_ARG";
+            case LOAD_L -> "LOAD_L";
+            case STR_K -> "STR_K";
+            case SETPROP -> "SETPROP";
+            case GETPROP -> "GETPROP";
+            case PRINTLN -> "PRINTLN";
+            case NEW -> "NEW";
+            case GETSIZE -> "GETSIZE";
+            default -> "UNKNOWN";
+        };
+    }
 }

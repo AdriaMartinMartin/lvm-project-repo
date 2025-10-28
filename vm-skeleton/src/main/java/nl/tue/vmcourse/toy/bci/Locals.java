@@ -3,7 +3,7 @@ package nl.tue.vmcourse.toy.bci;
 import nl.tue.vmcourse.toy.bci.value.Value;
 
 public class Locals {
-    private final Value[] slots;
+    private Value[] slots;
     private final Integer maxSlot;
 
 
@@ -17,6 +17,7 @@ public class Locals {
     Value get(int slot) {
         return slots[slot];
     }
+    public void clear() { slots = new Value[maxSlot]; }
 
     void set(int slot, Value v) {
         if (slot < maxSlot)

@@ -1,13 +1,17 @@
 package nl.tue.vmcourse.toy.ast;
 
+import nl.tue.vmcourse.toy.bci.CompileContext;
+import nl.tue.vmcourse.toy.bci.OpCode;
 import nl.tue.vmcourse.toy.interpreter.ToyAbstractFunctionBody;
 import nl.tue.vmcourse.toy.lang.RootCallTarget;
 import nl.tue.vmcourse.toy.lang.VirtualFrame;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class ToyFunctionBodyNode extends ToyAbstractFunctionBody {
+public class ToyFunctionBodyNode extends ToyStatementNode {
     private final ToyStatementNode methodBlock;
 
     public ToyFunctionBodyNode(ToyStatementNode methodBlock) {
@@ -15,19 +19,17 @@ public class ToyFunctionBodyNode extends ToyAbstractFunctionBody {
     }
 
     @Override
-    public Object execute(VirtualFrame frame) {
-        throw new RuntimeException("Cannot execute an AST node -- this is not an AST interpreter!");
+    public void compile(CompileContext ctx) {
+        methodBlock.compile(ctx);
+
+        ctx.emit(OpCode.PUSH_NULL);
+        ctx.emit(OpCode.RET);
     }
 
-    @Override
-    public void setFunctionTable(Map<String, RootCallTarget> tb) {
-
-    }
-
-    @Override
-    public String toString() {
+    public String printTree(String functionName) {
         return "ToyFunctionBodyNode{" +
-                "methodBlock=" + methodBlock +
-                '}';
+            "functionName=" + functionName +
+            ", methodBlock=" + methodBlock +
+            '}';
     }
 }
