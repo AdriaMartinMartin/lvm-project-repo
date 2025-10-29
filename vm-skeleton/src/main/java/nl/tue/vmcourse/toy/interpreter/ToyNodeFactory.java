@@ -287,8 +287,9 @@ public class ToyNodeFactory {
 
         Integer frameSlot = lexicalScope.find(name);
         boolean newVariable = false;
+
         if (frameSlot == null) {
-            frameSlot = frameDescriptorBuilder.addSlot(name);
+            frameSlot = (argumentIndex != null) ? frameDescriptorBuilder.addParam(name) : frameDescriptorBuilder.addSlot(name);
             lexicalScope.locals.put(name, frameSlot);
             newVariable = true;
         }

@@ -10,13 +10,13 @@ import java.util.Set;
 public final class BuiltinBuilder {
     private BuiltinBuilder() {}
 
-    private static final Set<String> reserved_names = Set.of("println", "new", "getSize", "nanoTime", "typeOf", "defineFunction");
+    private static final Set<String> reserved_names = Set.of("println", "new", "getSize", "nanoTime", "typeOf", "defineFunction", "eval");
 
     public static void build(Map<String, RootCallTarget> functionTable) {
 
         FrameDescriptor.Builder builder = FrameDescriptor.newBuilder();
 
-        builder.addSlot("String string");
+        builder.addParam("String string");
         ToyRootNode rNode = new ToyRootNode(builder.build(), new PrintBuiltin(), "println");
         RootCallTarget rcTarget = new RootCallTarget(rNode);
 
@@ -30,7 +30,7 @@ public final class BuiltinBuilder {
 
 
         builder = FrameDescriptor.newBuilder();
-        builder.addSlot("VObject o");
+        builder.addParam("VObject o");
         ToyRootNode rNode_2 = new ToyRootNode(builder.build(), new GetSizeBuiltin(), "getSize");
         RootCallTarget rcTarget_2 = new RootCallTarget(rNode_2);
 
@@ -43,18 +43,26 @@ public final class BuiltinBuilder {
         functionTable.put("nanoTime", rcTarget_3);
 
         builder = FrameDescriptor.newBuilder();
-        builder.addSlot("Value value");
+        builder.addParam("Value value");
         ToyRootNode rNode_4 = new ToyRootNode(builder.build(), new TypeOfBuiltin(), "typeOf");
         RootCallTarget rcTarget_4 = new RootCallTarget(rNode_4);
 
         functionTable.put("typeOf", rcTarget_4);
 
         builder = FrameDescriptor.newBuilder();
-        builder.addSlot("String func");
+        builder.addParam("String func");
         ToyRootNode rNode_5 = new ToyRootNode(builder.build(), new DefineFunctionBuiltin(functionTable), "defineFunction");
         RootCallTarget rcTarget_5 = new RootCallTarget(rNode_5);
 
         functionTable.put("defineFunction", rcTarget_5);
+
+        builder = FrameDescriptor.newBuilder();
+        builder.addParam("String lan");
+        builder.addParam("String func");
+        ToyRootNode rNode_6 = new ToyRootNode(builder.build(), new EvalBuiltin(functionTable), "eval");
+        RootCallTarget rcTarget_6 = new RootCallTarget(rNode_6);
+
+        functionTable.put("eval", rcTarget_6);
     }
 
     public static boolean reservedName(String functionName) {

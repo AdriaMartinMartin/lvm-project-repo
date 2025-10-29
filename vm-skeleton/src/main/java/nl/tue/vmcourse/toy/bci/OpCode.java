@@ -55,6 +55,8 @@ public final class OpCode {
     public static final byte NANO_TIME = 0x53;
     public static final byte TYPE_OF = 0x54;
     public static final byte DEF_FUN = 0x55;
+    public static final byte EVAL = 0x56;
+
 
     public static Object nameOf(byte opcode) {
         return switch (opcode) {
@@ -86,6 +88,7 @@ public final class OpCode {
             case NANO_TIME -> "NANO_TIME";
             case TYPE_OF -> "TYPE_OF";
             case DEF_FUN -> "DEF_FUN";
+            case EVAL -> "EVAL";
             default -> "UNKNOWN";
         };
     }
