@@ -10,10 +10,11 @@ public final class OpCode {
     // Stack operations
     public static final byte PUSH_I64 = 0x01;
     public static final byte PUSH_S = 0x02;
-    public static final byte PUSH_K = 0X03;
-    public static final byte POP = 0x04;
-    public static final byte POP_N = 0x05;
-    public static final byte PUSH_NULL = 0x06;
+    public static final byte PUSH_K = 0x03;
+    public static final byte PUSH_F = 0x04;
+    public static final byte POP = 0x05;
+    public static final byte POP_N = 0x06;
+    public static final byte PUSH_NULL = 0x07;
 
     // Arithmetic
     public static final byte ADD = 0x10;
@@ -51,7 +52,9 @@ public final class OpCode {
     public static final byte PRINTLN = 0x50;
     public static final byte NEW = 0x51;
     public static final byte GETSIZE = 0x52;
-
+    public static final byte NANO_TIME = 0x53;
+    public static final byte TYPE_OF = 0x54;
+    public static final byte DEF_FUN = 0x55;
 
     public static Object nameOf(byte opcode) {
         return switch (opcode) {
@@ -59,14 +62,18 @@ public final class OpCode {
             case RET -> "RET";
             case PUSH_I64 -> "PUSH_I64";
             case PUSH_K -> "PUSH_K";
+            case PUSH_F -> "PUSH_F";
             case PUSH_NULL -> "PUSH_NULL";
             case ADD -> "ADD";
             case SUB -> "SUB";
             case MUL -> "MUL";
+            case DIV -> "DIV";
             case NEG -> "NEG";
+            case NOT -> "NOT";
             case JMP -> "JMP";
             case JNE -> "JNE";
             case LT -> "LT";
+            case LE -> "LE";
             case EQ -> "EQ";
             case LOAD_ARG -> "LOAD_ARG";
             case LOAD_L -> "LOAD_L";
@@ -76,6 +83,9 @@ public final class OpCode {
             case PRINTLN -> "PRINTLN";
             case NEW -> "NEW";
             case GETSIZE -> "GETSIZE";
+            case NANO_TIME -> "NANO_TIME";
+            case TYPE_OF -> "TYPE_OF";
+            case DEF_FUN -> "DEF_FUN";
             default -> "UNKNOWN";
         };
     }

@@ -15,6 +15,7 @@ public class Stack {
     Value peek() { return stack.peek(); }
     final Deque<Value> view() { return stack; }
     public void clear() { stack.clear(); }
+    public int size() { return stack.size(); }
 
     // Type-based push/retrieve
     void pushLong(long l) { push(new VLong(l));}

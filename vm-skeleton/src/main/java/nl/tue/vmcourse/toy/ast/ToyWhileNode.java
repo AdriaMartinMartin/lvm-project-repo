@@ -16,19 +16,20 @@ public class ToyWhileNode extends ToyStatementNode {
     public void compile(CompileContext ctx) {
         assert conditionNode != null && bodyNode != null;
 
-        final int startAddr = ctx.position();
+        CompileContext.Label Lcond = ctx.newLabel();
+        CompileContext.Label Lend = ctx.newLabel();
 
+        ctx.enterLoop(Lend, Lcond);
+
+        ctx.mark(Lcond);
         conditionNode.compile(ctx);
-
-        ctx.emit(OpCode.JNE);
-        final int patchJne = ctx.position();
-        ctx.emitI32(0);
+        ctx.emitJNEto(Lend);
 
         bodyNode.compile(ctx);
-        ctx.emit(OpCode.JMP);
-        ctx.emitI32(startAddr);
 
-        ctx.patchI32(patchJne, ctx.position());
+        ctx.emitJMPto(Lcond);
+        ctx.mark(Lend);
+        ctx.exitLoop();
     }
 
     @Override

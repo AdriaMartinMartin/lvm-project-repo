@@ -1,6 +1,7 @@
 package nl.tue.vmcourse.toy.ast;
 
 import nl.tue.vmcourse.toy.bci.CompileContext;
+import nl.tue.vmcourse.toy.bci.OpCode;
 
 import java.math.BigInteger;
 
@@ -21,6 +22,7 @@ public class ToyBigIntegerLiteralNode extends ToyExpressionNode {
 
     @Override
     public void compile(CompileContext ctx) {
-
+        ctx.emit(OpCode.PUSH_K);
+        ctx.addConstant(bigInteger);
     }
 }

@@ -11,6 +11,6 @@ public class ToyBreakNode extends ToyStatementNode {
 
     @Override
     public void compile(CompileContext ctx) {
-
+        ctx.emitJMPto(ctx.currBTarget());
     }
 }

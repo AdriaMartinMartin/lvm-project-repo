@@ -12,8 +12,10 @@ public interface Value {
     Value add(Value r);
     Value sub(Value r);
     Value mul(Value r);
+    Value div(Value r);
     Value neg();
     Value lt(Value r);
+    Value le(Value r);
     Value eq(Value r);
     String toString();
     void print();

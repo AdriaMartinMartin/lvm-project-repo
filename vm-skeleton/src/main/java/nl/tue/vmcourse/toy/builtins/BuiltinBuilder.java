@@ -4,15 +4,13 @@ import nl.tue.vmcourse.toy.interpreter.ToyRootNode;
 import nl.tue.vmcourse.toy.lang.FrameDescriptor;
 import nl.tue.vmcourse.toy.lang.RootCallTarget;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 public final class BuiltinBuilder {
     private BuiltinBuilder() {}
 
-    private static final Set<String> reserved_names = Set.of("println", "new", "getSize");
+    private static final Set<String> reserved_names = Set.of("println", "new", "getSize", "nanoTime", "typeOf", "defineFunction");
 
     public static void build(Map<String, RootCallTarget> functionTable) {
 
@@ -37,6 +35,26 @@ public final class BuiltinBuilder {
         RootCallTarget rcTarget_2 = new RootCallTarget(rNode_2);
 
         functionTable.put("getSize", rcTarget_2);
+
+        builder = FrameDescriptor.newBuilder();
+        ToyRootNode rNode_3 = new ToyRootNode(builder.build(), new NanoTimeBuiltin(), "nanoTime");
+        RootCallTarget rcTarget_3 = new RootCallTarget(rNode_3);
+
+        functionTable.put("nanoTime", rcTarget_3);
+
+        builder = FrameDescriptor.newBuilder();
+        builder.addSlot("Value value");
+        ToyRootNode rNode_4 = new ToyRootNode(builder.build(), new TypeOfBuiltin(), "typeOf");
+        RootCallTarget rcTarget_4 = new RootCallTarget(rNode_4);
+
+        functionTable.put("typeOf", rcTarget_4);
+
+        builder = FrameDescriptor.newBuilder();
+        builder.addSlot("String func");
+        ToyRootNode rNode_5 = new ToyRootNode(builder.build(), new DefineFunctionBuiltin(functionTable), "defineFunction");
+        RootCallTarget rcTarget_5 = new RootCallTarget(rNode_5);
+
+        functionTable.put("defineFunction", rcTarget_5);
     }
 
     public static boolean reservedName(String functionName) {

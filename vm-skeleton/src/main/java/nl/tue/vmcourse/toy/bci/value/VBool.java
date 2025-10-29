@@ -26,12 +26,20 @@ public class VBool implements Value {
     public Value mul(Value r) { throw new RuntimeException("Cannot do multiplication with VBoool"); }
 
     @Override
+    public Value div(Value r) { throw new RuntimeException("Cannot do division with VBoool"); }
+
+
+    @Override
     public Value neg() {
         throw new RuntimeException("Error on \"-\": Unary operation only defined for numbers");
     }
 
     @Override
     public Value lt(Value r) { throw new RuntimeException("Cannot do less than operation with VBool"); }
+
+    @Override
+    public Value le(Value r) { throw new RuntimeException("Cannot do less equal operation with VBool"); }
+
 
     @Override
     public Value eq(Value r) {

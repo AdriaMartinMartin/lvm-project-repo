@@ -9,6 +9,8 @@ public class VNull implements Value {
         return instance;
     }
 
+    public Object v() { return null; }
+
     @Override
     public Value add(Value r) {
         if (r instanceof VString) {
@@ -27,12 +29,18 @@ public class VNull implements Value {
     public Value mul(Value r) { throw new RuntimeException("Cannot do multiplications with NULL"); }
 
     @Override
+    public Value div(Value r) { throw new RuntimeException("Cannot do division with NULL"); }
+
+    @Override
     public Value neg() {
         throw new RuntimeException("Error on \"-\": Unary operation only defined for numbers");
     }
 
     @Override
     public Value lt(Value r) { throw new RuntimeException("Cannot do less than operation with NULL"); }
+
+    @Override
+    public Value le(Value r) { throw new RuntimeException("Cannot do less equal operation with NULL"); }
 
     @Override
     public Value eq(Value r) {

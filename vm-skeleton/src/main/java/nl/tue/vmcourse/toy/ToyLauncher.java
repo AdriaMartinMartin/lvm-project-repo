@@ -2,6 +2,9 @@ package nl.tue.vmcourse.toy;
 
 import nl.tue.vmcourse.toy.bci.BciDisassembler;
 import nl.tue.vmcourse.toy.bci.BciTracer;
+import nl.tue.vmcourse.toy.bci.ToyBciLoop;
+import nl.tue.vmcourse.toy.bci.value.VNull;
+import nl.tue.vmcourse.toy.bci.value.Value;
 import nl.tue.vmcourse.toy.builtins.BuiltinBuilder;
 import nl.tue.vmcourse.toy.interpreter.ToySyntaxErrorException;
 import nl.tue.vmcourse.toy.lang.RootCallTarget;
@@ -12,6 +15,7 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.misc.Interval;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 public class ToyLauncher {
@@ -110,10 +114,11 @@ public class ToyLauncher {
             System.exit(1);
         }
         // TODO, ignores other args for now.
-        CharStream charStream = CharStreams.fromFileName(args[args.length - 1]);
+        CharStream charStream = CharStreams.fromFileName(args[args.length - 1], StandardCharsets.UTF_8);
         try {
+            // Object result = ToyBciLoop.unbox((Value) evalStream(charStream));
             Object result = evalStream(charStream);
-            // System.out.println(result);
+            if (!(result instanceof VNull)) System.out.println(result);
         } catch (ToySyntaxErrorException e) {
             System.err.println(e.getMessage());
         }

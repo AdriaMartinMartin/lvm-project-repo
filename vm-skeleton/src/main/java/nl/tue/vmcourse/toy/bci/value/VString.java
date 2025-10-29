@@ -1,5 +1,6 @@
 package nl.tue.vmcourse.toy.bci.value;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 public final class VString implements Value {
@@ -13,6 +14,7 @@ public final class VString implements Value {
 
     @Override
     public Value add(Value r) {
+        if (r instanceof VFunction) throw new RuntimeException("Cannot add a VString to " + r.getClass().getSimpleName());
 //        throw new UnsupportedOperationException("Cannot add VString to " + r.getClass().getSimpleName());
         return new VString(v + r);
     }
@@ -28,12 +30,20 @@ public final class VString implements Value {
     }
 
     @Override
+    public Value div(Value r) {
+        throw new RuntimeException("Cannot do division with VString");
+    }
+
+    @Override
     public Value neg() {
         throw new RuntimeException("Error on \"-\": Unary operation only defined for numbers");
     }
 
     @Override
     public Value lt(Value r) { throw new RuntimeException("Cannot do less than operations with VString"); }
+
+    @Override
+    public Value le(Value r) { throw new RuntimeException("Cannot do less equal operations with VString"); }
 
     @Override
     public Value eq(Value r) {

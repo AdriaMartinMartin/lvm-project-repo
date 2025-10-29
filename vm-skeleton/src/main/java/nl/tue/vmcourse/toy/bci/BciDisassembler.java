@@ -31,16 +31,24 @@ public class BciDisassembler {
                     pc += 8;
                 }
                 case OpCode.PUSH_K -> {
-                    int idx = ((code[pc] & 0xFF) | ((code[pc + 1] & 0xFF) << 8));
+                    short idx = ByteBuffer.wrap(code, pc, 2).order(ByteOrder.LITTLE_ENDIAN).getShort();
                     pc += 2;
                     Object c = pool.get(idx);
                     out.printf("%04x: %-12s %d  ; %s%n", off, "PUSH_K", idx, printable(c));
+                }
+                case OpCode.PUSH_F -> {
+                    short idx = ByteBuffer.wrap(code, pc, 2).order(ByteOrder.LITTLE_ENDIAN).getShort();
+                    pc += 2;
+                    Object c = pool.get(idx);
+                    out.printf("%04x: %-12s %d  ; %s%n", off, "PUSH_F", idx, printable(c));
                 }
                 case OpCode.PUSH_NULL -> out.printf("%04x: %-12s%n", off, "PUSH_NULL");
                 case OpCode.ADD -> out.printf("%04x: %-12s%n", off, "ADD");
                 case OpCode.SUB -> out.printf("%04x: %-12s%n", off, "SUB");
                 case OpCode.MUL -> out.printf("%04x: %-12s%n", off, "MUL");
+                case OpCode.DIV -> out.printf("%04x: %-12s%n", off, "DIV");
                 case OpCode.NEG -> out.printf("%04x: %-12s%n", off, "NEG");
+                case OpCode.NOT -> out.printf("%04x: %-12s%n", off, "NOT");
                 case OpCode.SETPROP -> out.printf("%04x: %-12s%n", off, OpCode.nameOf(OpCode.SETPROP));
                 case OpCode.GETPROP -> out.printf("%04x: %-12s%n", off, OpCode.nameOf(OpCode.GETPROP));
                 case OpCode.JMP -> {
@@ -54,6 +62,7 @@ public class BciDisassembler {
                     pc += 4;
                 }
                 case OpCode.LT -> out.printf("%04x: %-12s%n", off, "LT");
+                case OpCode.LE -> out.printf("%04x: %-12s%n", off, "LE");
                 case OpCode.EQ -> out.printf("%04x: %-12s%n", off, "EQ");
                 case OpCode.LOAD_ARG -> {
                     int idx = ((code[pc] & 0xFF) | ((code[pc + 1] & 0xFF) << 8));
@@ -71,12 +80,9 @@ public class BciDisassembler {
                     out.printf("%04x: %-12s %d%n", off, "STR_K", slot);
                 }
                 case OpCode.CALL -> {
-                    int poolIdx = ((code[pc] & 0xFF) | ((code[pc + 1] & 0xFF) << 8));
-                    int argc = ((code[pc + 2] & 0xFF) | ((code[pc + 3] & 0xFF) << 8));
-                    pc += 4;
-                    Object name = pool.get(poolIdx);
-                    out.printf("%04x: %-12s %s argc=%d (pool[%d])%n",
-                        off, "CALL", printable(name), argc, poolIdx);
+                    int argc = ByteBuffer.wrap(code, pc, 2).order(ByteOrder.LITTLE_ENDIAN).getShort();
+                    pc += 2;
+                    out.printf("%04x: %-12s argc=%d%n", off, "CALL", argc);
                 }
                 case OpCode.RET -> out.printf("%04x: %-12s%n", off, "RET");
                 default -> out.printf("%04x: %-12s 0x%02X%n", off, "UNKNOWN", op);

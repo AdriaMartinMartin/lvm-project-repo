@@ -1,6 +1,7 @@
 package nl.tue.vmcourse.toy.ast;
 
 import nl.tue.vmcourse.toy.bci.CompileContext;
+import nl.tue.vmcourse.toy.bci.OpCode;
 
 public class ToyLogicalNotNode extends ToyExpressionNode {
     private final ToyExpressionNode toyLessOrEqualNode;
@@ -16,7 +17,10 @@ public class ToyLogicalNotNode extends ToyExpressionNode {
 
     @Override
     public void compile(CompileContext ctx) {
+        assert toyLessOrEqualNode != null;
 
+        toyLessOrEqualNode.compile(ctx);
+        ctx.emit(OpCode.NOT);
     }
 
     @Override

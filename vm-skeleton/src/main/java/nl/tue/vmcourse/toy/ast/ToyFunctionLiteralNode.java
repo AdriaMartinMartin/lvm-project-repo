@@ -24,7 +24,7 @@ public class ToyFunctionLiteralNode extends ToyExpressionNode {
 
     @Override
     public void compile(CompileContext ctx) {
-        ctx.emit(OpCode.CALL);
+        ctx.emit(OpCode.PUSH_F);
         ctx.addConstant(name);
     }
 }

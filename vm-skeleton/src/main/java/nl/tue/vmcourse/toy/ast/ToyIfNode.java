@@ -18,29 +18,24 @@ public class ToyIfNode extends ToyStatementNode {
 
     @Override
     public void compile(CompileContext ctx) {
+        CompileContext.Label Lelse = ctx.newLabel();
+        CompileContext.Label Lend = ctx.newLabel();
+
         conditionNode.compile(ctx);
 
-        ctx.emit(OpCode.JNE);
-        final int jneAddrPos = ctx.position();
-        ctx.emitI32(0);
+        if ((elsePartNode != null)) ctx.emitJNEto(Lelse);
+        else ctx.emitJNEto(Lend);
 
         if (thenPartNode != null) thenPartNode.compile(ctx);
 
         if (elsePartNode != null) {
-            ctx.emit(OpCode.JMP);
-            final int jmpAddrPos = ctx.position();
-            ctx.emitI32(0);
+            ctx.emitJMPto(Lend);
 
-            final int elseBlockStart = ctx.position();
-            ctx.patchI32(jneAddrPos, elseBlockStart);
-
+            ctx.mark(Lelse);
             elsePartNode.compile(ctx);
-            final int cont = ctx.position();
-            ctx.patchI32(jmpAddrPos, cont);
-        } else {
-            final int cont = ctx.position();
-            ctx.patchI32(jneAddrPos, cont);
         }
+
+        ctx.mark(Lend);
     }
 
     @Override

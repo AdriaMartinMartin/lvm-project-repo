@@ -63,10 +63,16 @@ public class VObject implements Value {
     public Value mul(Value r) { throw new RuntimeException("Cannot do multiplications with VObjects"); }
 
     @Override
+    public Value div(Value r) { throw new RuntimeException("Cannot do division with VObjects"); }
+
+    @Override
     public Value neg() { throw new RuntimeException("Cannot do unary operation with VObjects"); }
 
     @Override
     public Value lt(Value r) { throw new RuntimeException("Cannot do less than operations with VObjects"); }
+
+    @Override
+    public Value le(Value r) { throw new RuntimeException("Cannot do less equal operations with VObjects"); }
 
     @Override
     public Value eq(Value r) {
@@ -84,8 +90,6 @@ public class VObject implements Value {
 
     @Override
     public String toString() {
-        return "VObject{" +
-            "props=" + props +
-            '}';
+        return String.valueOf(props);
     }
 }

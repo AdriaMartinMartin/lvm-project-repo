@@ -1,6 +1,7 @@
 package nl.tue.vmcourse.toy.ast;
 
 import nl.tue.vmcourse.toy.bci.CompileContext;
+import nl.tue.vmcourse.toy.bci.OpCode;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -31,6 +32,7 @@ public class ToyInvokeNode extends ToyExpressionNode {
             }
 
         functionNode.compile(ctx);
+        ctx.emit(OpCode.CALL);
         ctx.emitU16((short) toyExpressionNodes.length);
     }
 }

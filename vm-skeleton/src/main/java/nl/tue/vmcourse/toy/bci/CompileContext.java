@@ -1,16 +1,69 @@
 package nl.tue.vmcourse.toy.bci;
 
-import nl.tue.vmcourse.toy.bci.value.Value;
-
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public final class CompileContext {
     private final BytecodeBuffer code = new BytecodeBuffer();
+
+    public static final class Label {
+        int addr = -1;
+        final List<Integer> fixups = new ArrayList<>();
+        boolean isMarked() { return addr >=  0; }
+    }
+
+    public Label newLabel() { return new Label(); }
+
+    public void mark(Label L) {
+        if (L.isMarked()) throw new RuntimeException("Label already marked!");
+        L.addr = position();
+        for (int argPos : L.fixups) patchI32(argPos, L.addr);
+        L.fixups.clear();
+    }
+
+    public void emitJMPto(Label L) {
+        emit(OpCode.JMP);
+        int argPos = position();
+        emitI32(0);
+
+        if (L.isMarked()) patchI32(argPos, L.addr);
+        else L.fixups.add(argPos);
+    }
+
+    public void emitJNEto(Label L) {
+        emit(OpCode.JNE);
+        int argPos = position();
+        emitI32(0);
+
+        if (L.isMarked()) patchI32(argPos, L.addr);
+        else L.fixups.add(argPos);
+    }
+
+    public static final class LoopContext {
+        final Label breakTarget;
+        final Label continueTarget;
+
+        public LoopContext(Label breakTarget, Label continueTarget) {
+            this.breakTarget = breakTarget;
+            this.continueTarget = continueTarget;
+        }
+    }
+
+    private final Deque<LoopContext> loopStack = new ArrayDeque<>();
+
+    public void enterLoop(Label bT, Label cT) { loopStack.push(new LoopContext(bT, cT)); }
+    public void exitLoop() { loopStack.pop(); }
+
+    public Label currBTarget() {
+        if (loopStack.isEmpty()) throw new RuntimeException("break outside loop.");
+        return loopStack.peek().breakTarget;
+    }
+
+    public Label currCTarget() {
+        if (loopStack.isEmpty()) throw new RuntimeException("continue outside loop.");
+        return loopStack.peek().continueTarget;
+    }
 
     public int position() {
         return code.position();

@@ -1,5 +1,6 @@
 package nl.tue.vmcourse.toy.bci.value;
 
-public interface ConstantTranslator {
+@FunctionalInterface
+public interface ConstantBoxer {
     Value box(Object constant);
 }
