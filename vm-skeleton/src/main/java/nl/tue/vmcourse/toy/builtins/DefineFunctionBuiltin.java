@@ -46,7 +46,10 @@ public class DefineFunctionBuiltin extends ToyAbstractFunctionBody {
         Map<String, RootCallTarget> newFunc = factory.getAllFunctions();
         if (newFunc.isEmpty()) throw new RuntimeException("No function definitions found in source passed to defineFunction().");
 
-        functionTable.putAll(newFunc);
+        for (Map.Entry<String, RootCallTarget> e : newFunc.entrySet()) {
+            functionTable.put(e.getKey(), e.getValue());
+            e.getValue().setFunctionTable(functionTable);
+        }
 
         return new VString(src);
     }
@@ -66,6 +69,6 @@ public class DefineFunctionBuiltin extends ToyAbstractFunctionBody {
 
     @Override
     public void setTracer(BciTracer stderr) {
-        stderr.onExec(0xFFFF, OpCode.DEF_FUN, null);
+        // stderr.onExec(0xFFFF, OpCode.DEF_FUN, null);
     }
 }

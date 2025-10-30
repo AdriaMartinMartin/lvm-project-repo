@@ -33,6 +33,8 @@ public class ToyRootNode extends ToyNode {
     public void setFunctionTable(Map<String, RootCallTarget> tb) { functionBodyNode.setFunctionTable(tb); }
 
     public int getArity() { return frameDescriptor.getArity(); }
+    public int getLocalCount() { return frameDescriptor.getLocalCount(); }
+    public String getLocalName(int idx) { return frameDescriptor.getLocalName(idx); }
     public String getName() { return functionName; }
     public final byte[] getCode() { return functionBodyNode.getCode(); }
     public final List<Object> getPool() { return functionBodyNode.getPool(); }

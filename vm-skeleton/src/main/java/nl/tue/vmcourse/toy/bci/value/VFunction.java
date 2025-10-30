@@ -1,5 +1,6 @@
 package nl.tue.vmcourse.toy.bci.value;
 
+import nl.tue.vmcourse.toy.interpreter.ToySyntaxErrorException;
 import nl.tue.vmcourse.toy.lang.RootCallTarget;
 
 import java.util.Objects;
@@ -46,6 +47,8 @@ public class VFunction implements Value {
 
     @Override
     public void print() {
+        if (rt == null) throw new ToySyntaxErrorException("Unknown object: \"" + name + "\"");
+
         System.out.println(name);
     }
 

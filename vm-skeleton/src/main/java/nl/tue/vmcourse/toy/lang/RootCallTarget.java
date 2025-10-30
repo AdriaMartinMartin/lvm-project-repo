@@ -21,6 +21,8 @@ public class RootCallTarget {
     public void setFunctionTable(Map<String, RootCallTarget> tb) { rootNode.setFunctionTable(tb); }
 
     public final int getArity() { return rootNode.getArity(); }
+    public int getLocalCount() { return rootNode.getLocalCount(); }
+    public String getLocalName(int idx) { return rootNode.getLocalName(idx); }
     public final String getName() { return rootNode.getName(); }
     public final byte[] getCode() { return rootNode.getCode(); }
     public final List<Object> getPool() { return rootNode.getPool(); }

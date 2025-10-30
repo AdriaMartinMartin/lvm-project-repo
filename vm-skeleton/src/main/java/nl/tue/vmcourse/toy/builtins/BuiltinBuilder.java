@@ -10,7 +10,7 @@ import java.util.Set;
 public final class BuiltinBuilder {
     private BuiltinBuilder() {}
 
-    private static final Set<String> reserved_names = Set.of("println", "new", "getSize", "nanoTime", "typeOf", "defineFunction", "eval");
+    private static final Set<String> reserved_names = Set.of("println", "new", "getSize", "nanoTime", "typeOf", "defineFunction", "eval", "stacktrace", "helloEqualsWorld");
 
     public static void build(Map<String, RootCallTarget> functionTable) {
 
@@ -63,6 +63,18 @@ public final class BuiltinBuilder {
         RootCallTarget rcTarget_6 = new RootCallTarget(rNode_6);
 
         functionTable.put("eval", rcTarget_6);
+
+        builder = FrameDescriptor.newBuilder();
+        ToyRootNode rNode_7 = new ToyRootNode(builder.build(), new StackTraceBuiltin(), "stacktrace");
+        RootCallTarget rcTarget_7 = new RootCallTarget(rNode_7);
+
+        functionTable.put("stacktrace", rcTarget_7);
+
+        builder = FrameDescriptor.newBuilder();
+        ToyRootNode rNode_8 = new ToyRootNode(builder.build(), new HelloEqualsWorld(), "helloEqualsWorld");
+        RootCallTarget rcTarget_8 = new RootCallTarget(rNode_8);
+
+        functionTable.put("helloEqualsWorld", rcTarget_8);
     }
 
     public static boolean reservedName(String functionName) {

@@ -1,7 +1,5 @@
 package nl.tue.vmcourse.toy.lang;
 
-import java.util.ArrayList;
-
 public class VirtualFrame {
     private final Object[] arguments;
 

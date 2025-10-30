@@ -52,7 +52,10 @@ public class EvalBuiltin extends ToyAbstractFunctionBody {
             if (newFunc.isEmpty())
                 throw new RuntimeException("No function definitions found in source passed to eval().");
 
-            functionTable.putAll(newFunc);
+            for (Map.Entry<String, RootCallTarget> e : newFunc.entrySet()) {
+                functionTable.put(e.getKey(), e.getValue());
+                e.getValue().setFunctionTable(functionTable);
+            }
         } catch (Exception e) {
             throw new ToySyntaxErrorException("Something went wrong parsing the eval function: " + e.getMessage());
         }
@@ -75,6 +78,6 @@ public class EvalBuiltin extends ToyAbstractFunctionBody {
 
     @Override
     public void setTracer(BciTracer stderr) {
-        stderr.onExec(0xFFFF, OpCode.EVAL, null);
+        // stderr.onExec(0xFFFF, OpCode.EVAL, null);
     }
 }

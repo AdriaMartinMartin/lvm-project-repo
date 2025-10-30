@@ -2,6 +2,7 @@ package nl.tue.vmcourse.toy.bci;
 
 import nl.tue.vmcourse.toy.bci.value.*;
 import nl.tue.vmcourse.toy.interpreter.ToyAbstractFunctionBody;
+import nl.tue.vmcourse.toy.interpreter.ToySyntaxErrorException;
 import nl.tue.vmcourse.toy.lang.RootCallTarget;
 import nl.tue.vmcourse.toy.lang.VirtualFrame;
 import nl.tue.vmcourse.toy.jit.JITCompiler;
@@ -79,6 +80,7 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
 //        return findUnboxer(v.getClass()).unbox(v);
 //    }
 
+    private final String fName;
     private Map<String, RootCallTarget> functionTable = new HashMap<>();
     private final List<Object> constantPool;
     private final byte[] code;
@@ -91,7 +93,8 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
         tracer = t;
     }
 
-    public ToyBciLoop(byte[] code, List<Object> pool) {
+    public ToyBciLoop(String fName, byte[] code, List<Object> pool) {
+        this.fName = fName;
         this.code = code;
         this.constantPool = pool;
         this.compiler = new JITCompiler();
@@ -133,10 +136,13 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
         short idx = CompileContext.undoU16(code, pc);
         Object rawConstant = constantPool.get(idx);
 
-        if (!(rawConstant instanceof String)) throw new RuntimeException("A function name is needed to push a function onto stack!");
+        if (!(rawConstant instanceof String))
+            throw new RuntimeException("A function name is needed to push a function onto stack!");
 
         String fName = (String) rawConstant;
         RootCallTarget rt = functionTable.get(fName);
+
+        // if (rt == null) throw new ToySyntaxErrorException("Unkown object: \"" + fName + "\"");
 
         VFunction f = new VFunction(rt, fName);
         stack.push(f);
@@ -234,7 +240,8 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
     private void opNOT(Stack stack) {
         Value v = stack.pop();
 
-        if (!(v instanceof VBool)) throw new RuntimeException("Type error: NOT operation must be performed over and VBool but instead" + v.getClass().getSimpleName());
+        if (!(v instanceof VBool))
+            throw new RuntimeException("Type error: NOT operation must be performed over and VBool but instead" + v.getClass().getSimpleName());
 
         stack.push(new VBool(!((VBool) v).v()));
     }
@@ -339,9 +346,17 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
             args[i] = stack.pop();
         }
 
-        Object object = target.invoke(args);
-        if (object != null && !(object instanceof VNull)) {
-            stack.push(BOXER.get(object.getClass()).box(object));
+        try {
+            Object object = target.invoke(args);
+            if (object != null && !(object instanceof VNull)) {
+                stack.push(BOXER.get(object.getClass()).box(object));
+            }
+        } catch (ToySyntaxErrorException e) {
+            String msg = e.getMessage();
+
+            if (msg != null && !msg.startsWith("Runtime error on"))
+                throw new ToySyntaxErrorException("Runtime error on \"" + ((VFunction) v).getName() + "\": " + msg);
+            throw e;
         }
 
         return pc + 2;
@@ -362,7 +377,7 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
             byte op = code[pc++];
             if (tracer != null) tracer.onExec(addr, op, stack.view());
 
-//            executions++;
+
             switch (op) {
 //                case 42 -> {
 //                    if (executions <= JIT_COMPILATION_THRESHOLD) {
@@ -396,8 +411,10 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
                     return stack.isEmpty() ? Value.NULL : stack.pop();
                 }
                 // case ..
-                default -> throw new RuntimeException("TODO");
+                default -> throw new RuntimeException("TODO: Not implemented opcode");
             }
+
+
         }
         // return whatever;
     }

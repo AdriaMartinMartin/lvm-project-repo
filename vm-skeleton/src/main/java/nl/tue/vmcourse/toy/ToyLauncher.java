@@ -95,7 +95,6 @@ public class ToyLauncher {
 
             BuiltinBuilder.build(allFunctions);
 
-
             for (RootCallTarget rc : allFunctions.values()) {
                 rc.setFunctionTable(allFunctions);
                 if (TRACE_BCI) rc.setTracer(BciTracer.stderr(System.out));
@@ -121,6 +120,7 @@ public class ToyLauncher {
             if (!(result instanceof VNull)) System.out.println(result);
         } catch (ToySyntaxErrorException e) {
             System.err.println(e.getMessage());
+            System.exit(1);
         }
     }
 }

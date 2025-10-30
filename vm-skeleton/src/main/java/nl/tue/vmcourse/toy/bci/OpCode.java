@@ -56,6 +56,8 @@ public final class OpCode {
     public static final byte TYPE_OF = 0x54;
     public static final byte DEF_FUN = 0x55;
     public static final byte EVAL = 0x56;
+    public static final byte DUMP_ST = 0x57;
+    public static final byte EQ_WLD = 0x58;
 
 
     public static Object nameOf(byte opcode) {
@@ -89,6 +91,8 @@ public final class OpCode {
             case TYPE_OF -> "TYPE_OF";
             case DEF_FUN -> "DEF_FUN";
             case EVAL -> "EVAL";
+            case DUMP_ST -> "DUMP_ST";
+            case EQ_WLD  -> "EQ_WLD";
             default -> "UNKNOWN";
         };
     }
