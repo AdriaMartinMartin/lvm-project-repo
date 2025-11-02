@@ -1,6 +1,7 @@
 package nl.tue.vmcourse.toy.ast;
 
 import nl.tue.vmcourse.toy.bci.CompileContext;
+import nl.tue.vmcourse.toy.bci.OpCode;
 
 public class ToyLogicalAndNode extends ToyExpressionNode {
     private final ToyExpressionNode leftUnboxed;
@@ -14,7 +15,24 @@ public class ToyLogicalAndNode extends ToyExpressionNode {
 
     @Override
     public void compile(CompileContext ctx) {
+        assert leftUnboxed != null;
 
+        CompileContext.Label L_false = ctx.newLabel();
+        CompileContext.Label L_end = ctx.newLabel();
+
+        leftUnboxed.compile(ctx);
+        ctx.emit(OpCode.AND_L);
+        ctx.emitJNEto(L_false);
+
+        rightUnboxed.compile(ctx);
+        ctx.emit(OpCode.AND_R);
+        ctx.emitJMPto(L_end);
+
+        ctx.mark(L_false);
+        ctx.emit(OpCode.PUSH_K);
+        ctx.addConstant(false);
+
+        ctx.mark(L_end);
     }
 
     @Override

@@ -2,6 +2,8 @@ package nl.tue.vmcourse.toy.bci.value;
 
 import java.math.BigInteger;
 
+import nl.tue.vmcourse.toy.interpreter.ToySyntaxErrorException;
+
 public class VBigInteger implements Value {
     private final BigInteger v;
 
@@ -9,7 +11,9 @@ public class VBigInteger implements Value {
         this.v = v;
     }
 
-    public final BigInteger v() { return v; }
+    public final BigInteger v() {
+        return v;
+    }
 
     @Override
     public Value add(Value r) {
@@ -17,7 +21,7 @@ public class VBigInteger implements Value {
         if (r instanceof VLong) return new VBigInteger(v.add(BigInteger.valueOf(((VLong) r).v())));
         if (r instanceof VBigInteger) return new VBigInteger(v.add(((VBigInteger) r).v()));
 
-        throw new RuntimeException("Cannot perform an addition between VBigInteger and " + r.getClass().getSimpleName());
+        throw new ToySyntaxErrorException("Type error: operation \"+\" not defined for " + toErrString() + ", " + r.toErrString());
     }
 
     @Override
@@ -25,7 +29,7 @@ public class VBigInteger implements Value {
         if (r instanceof VLong) return new VBigInteger(v.subtract(BigInteger.valueOf(((VLong) r).v())));
         if (r instanceof VBigInteger) return new VBigInteger(v.subtract(((VBigInteger) r).v));
 
-        throw new RuntimeException("Cannot perform a subtraction between VBigInteger and " + r.getClass().getSimpleName());
+        throw new ToySyntaxErrorException("Type error: operation \"-\" not defined for " + toErrString() + ", " + r.toErrString());
     }
 
     @Override
@@ -33,15 +37,24 @@ public class VBigInteger implements Value {
         if (r instanceof VLong) return new VBigInteger(v.multiply(BigInteger.valueOf(((VLong) r).v())));
         if (r instanceof VBigInteger) return new VBigInteger(v.multiply(((VBigInteger) r).v));
 
-        throw new RuntimeException("Cannot perform a multiplication between VBigInteger and " + r.getClass().getSimpleName());
+        throw new ToySyntaxErrorException("Type error: operation \"*\" not defined for " + toErrString() + ", " + r.toErrString());
     }
 
     @Override
     public Value div(Value r) {
-        if (r instanceof VLong) return new VBigInteger(v.divide(BigInteger.valueOf(((VLong) r).v())));
-        if (r instanceof VBigInteger) return new VBigInteger(v.divide(((VBigInteger) r).v));
+        if (r instanceof VLong) {
+            if (((VLong) r).v() == 0)
+                throw new ToySyntaxErrorException("Runtime error on \"/\": Division by zero");
+            else
+                return new VBigInteger(v.divide(BigInteger.valueOf(((VLong) r).v())));
+        } else if (r instanceof VBigInteger) {
+            if (((VBigInteger) r).v().equals(0))
+                throw new ToySyntaxErrorException("Runtime error on \"/\": Division by zero");
+            else
+                return new VBigInteger(v.divide(((VBigInteger) r).v));
+        }
 
-        throw new RuntimeException("Cannot perform a multiplication between VBigInteger and " + r.getClass().getSimpleName());
+        throw new ToySyntaxErrorException("Type error: operation \"/\" not defined for " + toErrString() + ", " + r.toErrString());
     }
 
     @Override
@@ -54,7 +67,7 @@ public class VBigInteger implements Value {
         if (r instanceof VLong) return new VBool(v.compareTo(BigInteger.valueOf(((VLong) r).v())) < 0);
         if (r instanceof VBigInteger) return new VBool(v.compareTo(((VBigInteger) r).v) < 0);
 
-        throw new RuntimeException("Cannot perform a less than operation between VBigInteger and " + r.getClass().getSimpleName());
+        throw new ToySyntaxErrorException("Type error: operation \"<\" not defined for " + toErrString() + ", " + r.toErrString());
     }
 
     @Override
@@ -63,7 +76,7 @@ public class VBigInteger implements Value {
         if (r instanceof VBigInteger) return new VBool(v.compareTo(((VBigInteger) r).v) <= 0);
 
 
-        throw new RuntimeException("Cannot perform a less equal operation between VBigInteger and " + r.getClass().getSimpleName());
+        throw new ToySyntaxErrorException("Type error: operation \"<=\" not defined for " + toErrString() + ", " + r.toErrString());
     }
 
     @Override
@@ -71,7 +84,12 @@ public class VBigInteger implements Value {
         if (r instanceof VLong) return new VBool(v.compareTo(BigInteger.valueOf(((VLong) r).v())) == 0);
         if (r instanceof VBigInteger) return new VBool(v.compareTo(((VBigInteger) r).v) == 0);
 
-        throw new RuntimeException("Cannot perform a equal than operation between VBigInteger and " + r.getClass().getSimpleName());
+        return new VBool(false);
+    }
+
+    @Override
+    public int length() {
+        throw new ToySyntaxErrorException("Element is not a valid array.");
     }
 
     @Override
@@ -82,5 +100,10 @@ public class VBigInteger implements Value {
     @Override
     public String toString() {
         return String.valueOf(v);
+    }
+
+    @Override
+    public String toErrString() {
+        return "Number " + v;
     }
 }

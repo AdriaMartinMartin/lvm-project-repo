@@ -2,6 +2,7 @@ package nl.tue.vmcourse.toy.builtins;
 
 import nl.tue.vmcourse.toy.bci.BciTracer;
 import nl.tue.vmcourse.toy.bci.OpCode;
+import nl.tue.vmcourse.toy.bci.value.VFunction;
 import nl.tue.vmcourse.toy.bci.value.VString;
 import nl.tue.vmcourse.toy.interpreter.ToyAbstractFunctionBody;
 import nl.tue.vmcourse.toy.interpreter.ToyNodeFactory;
@@ -54,6 +55,7 @@ public class EvalBuiltin extends ToyAbstractFunctionBody {
 
             for (Map.Entry<String, RootCallTarget> e : newFunc.entrySet()) {
                 functionTable.put(e.getKey(), e.getValue());
+                VFunction.redefine(e.getKey(), e.getValue());
                 e.getValue().setFunctionTable(functionTable);
             }
         } catch (Exception e) {

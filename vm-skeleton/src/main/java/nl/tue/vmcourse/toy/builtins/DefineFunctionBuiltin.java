@@ -2,9 +2,13 @@ package nl.tue.vmcourse.toy.builtins;
 
 import nl.tue.vmcourse.toy.bci.BciTracer;
 import nl.tue.vmcourse.toy.bci.OpCode;
+import nl.tue.vmcourse.toy.bci.value.VFunction;
+import nl.tue.vmcourse.toy.bci.value.VNull;
 import nl.tue.vmcourse.toy.bci.value.VString;
+import nl.tue.vmcourse.toy.bci.value.Value;
 import nl.tue.vmcourse.toy.interpreter.ToyAbstractFunctionBody;
 import nl.tue.vmcourse.toy.interpreter.ToyNodeFactory;
+import nl.tue.vmcourse.toy.interpreter.ToySyntaxErrorException;
 import nl.tue.vmcourse.toy.lang.RootCallTarget;
 import nl.tue.vmcourse.toy.lang.VirtualFrame;
 import nl.tue.vmcourse.toy.parser.ToyLangLexer;
@@ -25,7 +29,7 @@ public class DefineFunctionBuiltin extends ToyAbstractFunctionBody {
 
     @Override
     public Object execute(VirtualFrame frame) {
-        assert frame.size() == 1 && frame.get(0) instanceof VString;
+        if (!(frame.get(0) instanceof VString)) throw new ToySyntaxErrorException("Type error: operation \"defineFunction\" not defined for " + ((Value) frame.get(0)).toErrString());
 
         String src = ((VString) frame.get(0)).v();
 
@@ -48,6 +52,7 @@ public class DefineFunctionBuiltin extends ToyAbstractFunctionBody {
 
         for (Map.Entry<String, RootCallTarget> e : newFunc.entrySet()) {
             functionTable.put(e.getKey(), e.getValue());
+            VFunction.redefine(e.getKey(), e.getValue());
             e.getValue().setFunctionTable(functionTable);
         }
 

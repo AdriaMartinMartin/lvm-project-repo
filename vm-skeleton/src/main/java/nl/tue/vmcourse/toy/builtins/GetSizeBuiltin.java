@@ -2,6 +2,7 @@ package nl.tue.vmcourse.toy.builtins;
 
 import nl.tue.vmcourse.toy.bci.BciTracer;
 import nl.tue.vmcourse.toy.bci.value.VLong;
+import nl.tue.vmcourse.toy.bci.value.Value;
 import nl.tue.vmcourse.toy.bci.value.VObject;
 import nl.tue.vmcourse.toy.interpreter.ToyAbstractFunctionBody;
 import nl.tue.vmcourse.toy.lang.RootCallTarget;
@@ -14,10 +15,9 @@ import java.util.Map;
 public class GetSizeBuiltin extends ToyAbstractFunctionBody {
     @Override
     public Object execute(VirtualFrame frame) {
-        assert frame.size() == 1 && frame.get(0) instanceof VObject;
+        assert frame.size() == 1 && frame.get(0) instanceof Value;
 
-        VObject arg = (VObject) frame.get(0);
-        return new VLong(arg.size());
+        return new VLong(((Value) frame.get(0)).length());
     }
 
     @Override

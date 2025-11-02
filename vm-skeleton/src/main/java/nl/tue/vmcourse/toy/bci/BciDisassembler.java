@@ -43,11 +43,18 @@ public class BciDisassembler {
                     out.printf("%04x: %-12s %d  ; %s%n", off, "PUSH_F", idx, printable(c));
                 }
                 case OpCode.PUSH_NULL -> out.printf("%04x: %-12s%n", off, "PUSH_NULL");
+                case OpCode.POP -> out.printf("%04x: %-12s%n", off, "POP");
                 case OpCode.ADD -> out.printf("%04x: %-12s%n", off, "ADD");
                 case OpCode.SUB -> out.printf("%04x: %-12s%n", off, "SUB");
                 case OpCode.MUL -> out.printf("%04x: %-12s%n", off, "MUL");
                 case OpCode.DIV -> out.printf("%04x: %-12s%n", off, "DIV");
                 case OpCode.NEG -> out.printf("%04x: %-12s%n", off, "NEG");
+                case OpCode.AND -> out.printf("%04x: %-12s%n", off, "AND");
+                case OpCode.AND_L -> out.printf("%04x: %-12s%n", off, "AND_L");
+                case OpCode.AND_R -> out.printf("%04x: %-12s%n", off, "AND_R");
+                case OpCode.OR_L -> out.printf("%04x: %-12s%n", off, "OR_L");
+                case OpCode.OR_R -> out.printf("%04x: %-12s%n", off, "OR_R");
+                case OpCode.OR -> out.printf("%04x: %-12s%n", off, "OR");
                 case OpCode.NOT -> out.printf("%04x: %-12s%n", off, "NOT");
                 case OpCode.SETPROP -> out.printf("%04x: %-12s%n", off, OpCode.nameOf(OpCode.SETPROP));
                 case OpCode.GETPROP -> out.printf("%04x: %-12s%n", off, OpCode.nameOf(OpCode.GETPROP));

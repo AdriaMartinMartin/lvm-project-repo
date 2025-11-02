@@ -150,12 +150,17 @@ public class ToyNodeFactory {
         return (statement instanceof ToyIfNode) || (statement instanceof ToyWhileNode);
     }
 
+    public ToyStatementNode createExpressionStatement(ToyStatementNode expr) {
+        if (expr == null) return null;
+        return new ToyStatementExpressionNode(expr);
+    }
+
     private void flattenBlocks(Iterable<? extends ToyStatementNode> bodyNodes, List<ToyStatementNode> flattenedNodes) {
         for (ToyStatementNode n : bodyNodes) {
             if (n instanceof ToyBlockNode) {
                 flattenBlocks(((ToyBlockNode) n).getStatements(), flattenedNodes);
             } else {
-                flattenedNodes.add(n);
+                flattenedNodes.add(createExpressionStatement(n));
             }
         }
     }

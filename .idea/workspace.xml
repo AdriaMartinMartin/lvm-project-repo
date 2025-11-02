@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="0b66f42b-664b-447e-84bb-77d43942284c" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/checkstyle-idea.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/original/InvalidSubStringStart.output.error" beforeDir="false" afterPath="$PROJECT_DIR$/tests/original/InvalidSubStringStart.output.error" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/original/InvalidUnaryMin.output.error" beforeDir="false" afterPath="$PROJECT_DIR$/tests/original/InvalidUnaryMin.output.error" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/original/IsMetaInstance.output" beforeDir="false" afterPath="$PROJECT_DIR$/tests/original/IsMetaInstance.output" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/original/LocalTypeChange.output" beforeDir="false" afterPath="$PROJECT_DIR$/tests/original/LocalTypeChange.output" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/original/Logical.output" beforeDir="false" afterPath="$PROJECT_DIR$/tests/original/Logical.output" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/original/Loop.output" beforeDir="false" afterPath="$PROJECT_DIR$/tests/original/Loop.output" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/original/LoopCall.output" beforeDir="false" afterPath="$PROJECT_DIR$/tests/original/LoopCall.output" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/original/LoopInvalidate.output" beforeDir="false" afterPath="$PROJECT_DIR$/tests/original/LoopInvalidate.output" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/original/LoopObject.output" beforeDir="false" afterPath="$PROJECT_DIR$/tests/original/LoopObject.output" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/original/LoopObjectDyn.output" beforeDir="false" afterPath="$PROJECT_DIR$/tests/original/LoopObjectDyn.output" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/original/LoopPolymorphic.output" beforeDir="false" afterPath="$PROJECT_DIR$/tests/original/LoopPolymorphic.output" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/original/LoopPrint.output" beforeDir="false" afterPath="$PROJECT_DIR$/tests/original/LoopPrint.output" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/original/MoreObjects.output.error" beforeDir="false" afterPath="$PROJECT_DIR$/tests/original/MoreObjects.output.error" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/original/MoreStrings.output.error" beforeDir="false" afterPath="$PROJECT_DIR$/tests/original/MoreStrings.output.error" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/original/Mul.output" beforeDir="false" afterPath="$PROJECT_DIR$/tests/original/Mul.output" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/original/MultipleNestedLoopsConditionalBreak.output" beforeDir="false" afterPath="$PROJECT_DIR$/tests/original/MultipleNestedLoopsConditionalBreak.output" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/original/Null.output" beforeDir="false" afterPath="$PROJECT_DIR$/tests/original/Null.output" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/original/Object.output.error" beforeDir="false" afterPath="$PROJECT_DIR$/tests/original/Object.output.error" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/original/ObjectDyn.output.error" beforeDir="false" afterPath="$PROJECT_DIR$/tests/original/ObjectDyn.output.error" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/original/ParseError01.output.error" beforeDir="false" afterPath="$PROJECT_DIR$/tests/original/ParseError01.output.error" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/original/ParseError02.output.error" beforeDir="false" afterPath="$PROJECT_DIR$/tests/original/ParseError02.output.error" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/original/RuntimeErrorInvalidAccess.output.error" beforeDir="false" afterPath="$PROJECT_DIR$/tests/original/RuntimeErrorInvalidAccess.output.error" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/original/RuntimeErrorZeroDivision.output.error" beforeDir="false" afterPath="$PROJECT_DIR$/tests/original/RuntimeErrorZeroDivision.output.error" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/original/Scopes1.output" beforeDir="false" afterPath="$PROJECT_DIR$/tests/original/Scopes1.output" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/original/Scopes2.output.error" beforeDir="false" afterPath="$PROJECT_DIR$/tests/original/Scopes2.output.error" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/original/Scopes3.output.error" beforeDir="false" afterPath="$PROJECT_DIR$/tests/original/Scopes3.output.error" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/original/SizeBuiltIns.output" beforeDir="false" afterPath="$PROJECT_DIR$/tests/original/SizeBuiltIns.output" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/original/String.output.error" beforeDir="false" afterPath="$PROJECT_DIR$/tests/original/String.output.error" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test.sl" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test.sl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/ast/ToyLogicalAndNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/ast/ToyLogicalAndNode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/ast/ToyLogicalOrNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/ast/ToyLogicalOrNode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/bci/BciDisassembler.java" beforeDir="false" afterPath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/bci/BciDisassembler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/bci/OpCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/bci/OpCode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/bci/ToyBciLoop.java" beforeDir="false" afterPath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/bci/ToyBciLoop.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/bci/value/VBigInteger.java" beforeDir="false" afterPath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/bci/value/VBigInteger.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/bci/value/VBool.java" beforeDir="false" afterPath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/bci/value/VBool.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/bci/value/VFunction.java" beforeDir="false" afterPath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/bci/value/VFunction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/bci/value/VLong.java" beforeDir="false" afterPath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/bci/value/VLong.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/bci/value/VNull.java" beforeDir="false" afterPath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/bci/value/VNull.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/bci/value/VObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/bci/value/VObject.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/bci/value/VString.java" beforeDir="false" afterPath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/bci/value/VString.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/bci/value/Value.java" beforeDir="false" afterPath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/bci/value/Value.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/builtins/BuiltinBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/builtins/BuiltinBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/builtins/GetSizeBuiltin.java" beforeDir="false" afterPath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/builtins/GetSizeBuiltin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/builtins/NewBuiltin.java" beforeDir="false" afterPath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/builtins/NewBuiltin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/builtins/TypeOfBuiltin.java" beforeDir="false" afterPath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/builtins/TypeOfBuiltin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/interpreter/ToyNodeFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/vm-skeleton/src/main/java/nl/tue/vmcourse/toy/interpreter/ToyNodeFactory.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 7
+}]]></component>
+  <component name="ProjectId" id="34ss1jWrL8JTAwoxyweVZAAsGU8" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "hotfix",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true"
+  }
+}]]></component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="0b66f42b-664b-447e-84bb-77d43942284c" name="Changes" comment="" />
+      <created>1762013405181</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1762013405181</updated>
+    </task>
+    <servers />
+  </component>
+</project>

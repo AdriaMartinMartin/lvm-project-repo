@@ -1,5 +1,7 @@
 package nl.tue.vmcourse.toy.bci.value;
 
+import nl.tue.vmcourse.toy.interpreter.ToySyntaxErrorException;
+
 public class VBool implements Value {
     private final boolean v;
 
@@ -7,38 +9,48 @@ public class VBool implements Value {
         this.v = v;
     }
 
-    public final boolean v() { return v; }
+    public final boolean v() {
+        return v;
+    }
 
     @Override
     public Value add(Value r) {
         if (r instanceof VString)
             return new VString(String.valueOf(v) + r);
 
-        throw new RuntimeException("Cannot add VBool to " + r.getClass().getSimpleName());
+        throw new ToySyntaxErrorException("Type error: operation \"+\" not defined for " + toErrString() + ", " + r.toErrString());
     }
 
     @Override
     public Value sub(Value r) {
-        throw new RuntimeException("Cannot do subtract operations with VBool");
+        throw new ToySyntaxErrorException("Type error: operation \"-\" not defined for " + toErrString() + ", " + r.toErrString());
     }
 
     @Override
-    public Value mul(Value r) { throw new RuntimeException("Cannot do multiplication with VBoool"); }
+    public Value mul(Value r) {
+        throw new ToySyntaxErrorException("Type error: operation \"*\" not defined for " + toErrString() + ", " + r.toErrString());
+    }
 
     @Override
-    public Value div(Value r) { throw new RuntimeException("Cannot do division with VBoool"); }
+    public Value div(Value r) {
+        throw new ToySyntaxErrorException("Type error: operation \"/\" not defined for " + toErrString() + ", " + r.toErrString());
+    }
 
 
     @Override
     public Value neg() {
-        throw new RuntimeException("Error on \"-\": Unary operation only defined for numbers");
+        throw new ToySyntaxErrorException("Runtime error on \"-\": Unary operation only defined for numbers");
     }
 
     @Override
-    public Value lt(Value r) { throw new RuntimeException("Cannot do less than operation with VBool"); }
+    public Value lt(Value r) {
+        throw new ToySyntaxErrorException("Type error: operation \"<\" not defined for " + toErrString() + ", " + r.toErrString());
+    }
 
     @Override
-    public Value le(Value r) { throw new RuntimeException("Cannot do less equal operation with VBool"); }
+    public Value le(Value r) {
+        throw new ToySyntaxErrorException("Type error: operation \"<=\" not defined for " + toErrString() + ", " + r.toErrString());
+    }
 
 
     @Override
@@ -50,6 +62,11 @@ public class VBool implements Value {
     }
 
     @Override
+    public int length() {
+        throw new ToySyntaxErrorException("Element is not a valid array.");
+    }
+
+    @Override
     public void print() {
         System.out.println(v);
     }
@@ -57,5 +74,10 @@ public class VBool implements Value {
     @Override
     public String toString() {
         return String.valueOf(v);
+    }
+
+    @Override
+    public String toErrString() {
+        return "Boolean" + v;
     }
 }

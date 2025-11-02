@@ -5,6 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import nl.tue.vmcourse.toy.interpreter.ToySyntaxErrorException;
+
 public class VObject implements Value {
     private final Map<String, Value> props;
 
@@ -12,10 +14,20 @@ public class VObject implements Value {
         this.props = new LinkedHashMap<>();
     }
 
-    public final Map<String, Value> v() { return props; }
+    public final Map<String, Value> v() {
+        return props;
+    }
 
     public Value get(Value key) {
-        return props.getOrDefault(toKeyString(key), Value.NULL);
+        Value v = props.get(toKeyString(key));
+
+        if (v == null) throw new ToySyntaxErrorException("Undefined property: " + key.toString());
+
+        return v;
+    }
+
+    public Value get(long idx) {
+        return props.values().stream().skip(idx).findFirst().orElse(Value.NULL);
     }
 
     public void set(Value key, Value v) {
@@ -44,7 +56,7 @@ public class VObject implements Value {
 
     public static String toKeyString(Value v) {
         if (v instanceof VObject) {
-            throw new RuntimeException("Invalid property key type: " + v.getClass().getSimpleName());
+            return ((VObject) v).v().toString();
         }
 
         return v.toString();
@@ -52,27 +64,39 @@ public class VObject implements Value {
 
     @Override
     public Value add(Value r) {
-        if (r instanceof VString) return new VString(props + ((VString) r).v());
-        throw new RuntimeException("Cannot perform addition between VObject and " + r.getClass().getSimpleName());
+        if (r instanceof VString) return new VString("[foreign object]" + ((VString) r).v());
+        throw new ToySyntaxErrorException("Type error: operation \"+\" not defined for " + toErrString() + ", " + r.toErrString());
     }
 
     @Override
-    public Value sub(Value r) { throw new RuntimeException("Cannot do subtraction with VObjects"); }
+    public Value sub(Value r) {
+        throw new ToySyntaxErrorException("Type error: operation \"-\" not defined for " + toErrString() + ", " + r.toErrString());
+    }
 
     @Override
-    public Value mul(Value r) { throw new RuntimeException("Cannot do multiplications with VObjects"); }
+    public Value mul(Value r) {
+        throw new ToySyntaxErrorException("Type error: operation \"*\" not defined for " + toErrString() + ", " + r.toErrString());
+    }
 
     @Override
-    public Value div(Value r) { throw new RuntimeException("Cannot do division with VObjects"); }
+    public Value div(Value r) {
+        throw new ToySyntaxErrorException("Type error: operation \"/\" not defined for " + toErrString() + ", " + r.toErrString());
+    }
 
     @Override
-    public Value neg() { throw new RuntimeException("Cannot do unary operation with VObjects"); }
+    public Value neg() {
+        throw new ToySyntaxErrorException("Runtime error on \"-\": Unary operation only defined for numbers");
+    }
 
     @Override
-    public Value lt(Value r) { throw new RuntimeException("Cannot do less than operations with VObjects"); }
+    public Value lt(Value r) {
+        throw new ToySyntaxErrorException("Type error: operation \"<\" not defined for " + toErrString() + ", " + r.toErrString());
+    }
 
     @Override
-    public Value le(Value r) { throw new RuntimeException("Cannot do less equal operations with VObjects"); }
+    public Value le(Value r) {
+        throw new ToySyntaxErrorException("Type error: operation \"<=\" not defined for " + toErrString() + ", " + r.toErrString());
+    }
 
     @Override
     public Value eq(Value r) {
@@ -84,12 +108,22 @@ public class VObject implements Value {
     }
 
     @Override
+    public int length() {
+        return props.size();
+    }
+
+    @Override
     public void print() {
-        System.out.println(props);
+        System.out.println("Object");
     }
 
     @Override
     public String toString() {
-        return String.valueOf(props);
+        return "Object";
+    }
+
+    @Override
+    public String toErrString() {
+        return "Object Object";
     }
 }

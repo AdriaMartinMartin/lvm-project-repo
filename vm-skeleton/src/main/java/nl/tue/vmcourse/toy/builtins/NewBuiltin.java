@@ -33,6 +33,6 @@ public class NewBuiltin extends ToyAbstractFunctionBody {
 
     @Override
     public void setTracer(BciTracer stderr) {
-        stderr.onExec(0xFFFF, OpCode.NEW, null);
+        // stderr.onExec(0xFFFF, OpCode.NEW, null);
     }
 }

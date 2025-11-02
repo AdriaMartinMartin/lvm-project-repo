@@ -11,20 +11,27 @@ import java.util.List;
 import java.util.Map;
 
 public class TypeOfBuiltin extends ToyAbstractFunctionBody {
+    private final Map<String, RootCallTarget> fTable;
+
+    public TypeOfBuiltin(Map<String, RootCallTarget> fTable) {
+        this.fTable = fTable;
+    }
+
     @Override
     public Object execute(VirtualFrame frame) {
         assert frame.size() == 1 && frame.get(0) instanceof Value;
         Value v = (Value) frame.get(0);
 
-        String type = "Undefined";
-        if (v instanceof VLong) type = "Number";
+        String type = "NULL";
+        if (v instanceof VLong || v instanceof VBigInteger) type = "Number";
         else if (v instanceof VString) type = "String";
         else if (v instanceof VBool) type = "Boolean";
         else if (v instanceof VNull) type = "NULL";
         else if (v instanceof VObject) type = "Object";
-        else if (v instanceof VFunction) type = "Function";
+        else if (v instanceof VFunction && fTable.containsKey(((VFunction) v).getName())) type = "Function";
+        else if (v instanceof VType) type = "Type";
 
-        return new VString(type);
+        return new VType(type);
     }
 
     @Override

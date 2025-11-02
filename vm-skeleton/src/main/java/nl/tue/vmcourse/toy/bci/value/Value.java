@@ -18,6 +18,8 @@ public interface Value {
     Value le(Value r);
     Value eq(Value r);
     String toString();
+    String toErrString();
+    int length();
     void print();
 
 }

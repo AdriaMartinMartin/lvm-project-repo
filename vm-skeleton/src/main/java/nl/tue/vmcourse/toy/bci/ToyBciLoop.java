@@ -17,7 +17,7 @@ import java.util.Map;
 public class ToyBciLoop extends ToyAbstractFunctionBody {
 
     private static final int JIT_COMPILATION_THRESHOLD = 3;
-    private static final int LOCALS_SLOTS = 16;
+    private static final int LOCALS_SLOTS = 256;
     private static final Map<Class<?>, ConstantBoxer> BOXER = new HashMap<>();
 //    private static final Map<Class<? extends Value>, ConstantUnboxer<? extends Value>> UNBOXER = new HashMap<>();
 
@@ -43,6 +43,7 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
         BOXER.put(VObject.class, o -> (Value) o);
         BOXER.put(VNull.class, o -> Value.NULL);
         BOXER.put(VFunction.class, o -> (Value) o);
+        BOXER.put(VType.class, o -> (Value) o);
 
         // Map -> VObject
         BOXER.put(Map.class, o -> {
@@ -144,7 +145,7 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
 
         // if (rt == null) throw new ToySyntaxErrorException("Unkown object: \"" + fName + "\"");
 
-        VFunction f = new VFunction(rt, fName);
+        VFunction f = VFunction.getFunction(fName, rt);
         stack.push(f);
 
         return pc + 2;
@@ -192,7 +193,7 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
         try {
             stack.push(l.div(r));
         } catch (RuntimeException e) {
-            throw new RuntimeException("Type error: " + e.getMessage());
+            throw e;
         }
     }
 
@@ -200,6 +201,49 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
         Value v = stack.pop().neg();
         stack.push(v);
     }
+
+    private void opAND(Stack stack) {
+        VBool b1 = (VBool) stack.pop();
+        VBool b2 = (VBool) stack.pop();
+
+        stack.push(new VBool(b1.v() && b2.v()));
+    }
+
+    private void opAND_L(Stack stack) {
+        Value v = stack.peek();
+
+        if (!(v instanceof VBool))
+            throw new ToySyntaxErrorException("Type error: operation \"&&\" not defined for " + v.toErrString() + ", ANY");
+    }
+
+    private void opAND_R(Stack stack) {
+        Value v = stack.peek();
+
+        if (!(v instanceof VBool))
+            throw new ToySyntaxErrorException("Type error: operation \"&&\" not defined for Boolean true, " + v.toErrString());
+    }
+
+    private void opOR_L(Stack stack) {
+        Value v = stack.peek();
+
+        if (!(v instanceof VBool))
+            throw new ToySyntaxErrorException("Type error: operation \"||\" not defined for " + v.toErrString() + ", ANY");
+    }
+
+    private void opOR_R(Stack stack) {
+        Value v = stack.peek();
+
+        if (!(v instanceof VBool))
+            throw new ToySyntaxErrorException("Type error: operation \"||\" not defined for Boolean false, " + v.toErrString());
+    }
+
+    private void opOR(Stack stack) {
+        VBool b1 = (VBool) stack.pop();
+        VBool b2 = (VBool) stack.pop();
+
+        stack.push(new VBool(b1.v() || b2.v()));
+    }
+
 
     private int opJMP(int pc) {
         int addr = CompileContext.undoI32(code, pc);
@@ -214,7 +258,7 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
         checkAddr(addr, code.length);
 
         if (!(v instanceof VBool))
-            throw new RuntimeException("Type error: operation \"if\" not defined for " + v.getClass().getSimpleName() + v);
+            throw new ToySyntaxErrorException("Type error: operation \"if\" not defined for " + v.toErrString());
 
         if (!((VBool) v).v()) {
             checkAddr(addr, code.length);
@@ -307,20 +351,19 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
             o = (VObject) stack.pop();
             o.set(k, v);
         } catch (RuntimeException e) {
-            throw new RuntimeException("Type error, accessing is only for Objects: " + e.getMessage());
+            throw new ToySyntaxErrorException("Undefined property: " + k);
         }
     }
 
     private void opGETPROP(Stack stack) {
         Value k = stack.pop();
-        VObject o;
+        Value o;
 
-        try {
-            o = (VObject) stack.pop();
-            stack.push(o.get(k));
-        } catch (RuntimeException e) {
-            throw new RuntimeException("Type error, accessing is only for Objects: " + e.getMessage());
-        }
+        o = stack.pop();
+        if (!(o instanceof VObject))
+            throw new ToySyntaxErrorException("Undefined property: " + k.toString());
+
+        stack.push(((VObject) o).get(k));
     }
 
     private int opCALL(int pc, Stack stack) {
@@ -328,33 +371,49 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
         int argp = CompileContext.undoU16(code, pc);
 
         if (!(v instanceof VFunction))
-            throw new RuntimeException("Bad type for function call. Expected pushed to stack: <VFunction>, you provided: " + v.getClass());
+            throw new ToySyntaxErrorException("Undefined function: " + v);
 
         RootCallTarget target = ((VFunction) v).v();
+
+        if (target == null)
+            throw new ToySyntaxErrorException("Undefined function: " + ((VFunction) v).getName());
 
         int argc = target.getArity();
         Object[] args = new Object[argc];
 
         int k = argp - argc;
 
-        if (k > 0)
+        if (k >= 0) {
             while (k-- > 0) stack.pop();
-        else if (k < 0)
-            throw new RuntimeException("Function " + target.getName() + " expects " + argc + " args, provided only " + argp);
+            for (int i = argc - 1; i >= 0; i--) {
+                args[i] = stack.pop();
+            }
+        } else {
+            // throw new RuntimeException("Function " + target.getName() + " expects " + argc + " args, provided only " + argp); -> what should be...
+            if (argp > 0) {
+                for (int i = argp - 1; i >= 0; i--) {
+                    args[i] = stack.pop();
+                }
+            }
 
-        for (int i = argc - 1; i >= 0; i--) {
-            args[i] = stack.pop();
+            for (int i = argp; i < argc; i++) {
+                args[i] = Value.NULL;
+            }
         }
 
         try {
             Object object = target.invoke(args);
-            if (object != null && !(object instanceof VNull)) {
-                stack.push(BOXER.get(object.getClass()).box(object));
-            }
+            stack.push(object == null ? Value.NULL : BOXER.get(object.getClass()).box(object));
         } catch (ToySyntaxErrorException e) {
             String msg = e.getMessage();
 
-            if (msg != null && !msg.startsWith("Runtime error on"))
+            if (msg.startsWith("Exception occurred, see trace.log for more info")) throw e;
+            if (msg.startsWith("Not a string: cannot substring")) throw e;
+            if (msg.startsWith("Type error")) throw e;
+            if (msg.startsWith("Undefined function:")) throw e;
+            if (msg.startsWith("Not an object!")) throw e;
+
+            if (!msg.startsWith("Runtime error on"))
                 throw new ToySyntaxErrorException("Runtime error on \"" + ((VFunction) v).getName() + "\": " + msg);
             throw e;
         }
@@ -390,11 +449,20 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
                 case OpCode.PUSH_K -> pc = opPUSH_K(pc, stack);
                 case OpCode.PUSH_F -> pc = opPUSH_F(pc, stack);
                 case OpCode.PUSH_NULL -> stack.push(Value.NULL);
+                case OpCode.POP -> {
+                    if (!stack.isEmpty()) stack.pop();
+                }
                 case OpCode.ADD -> opADD(stack);
                 case OpCode.SUB -> opSUB(stack);
                 case OpCode.MUL -> opMUL(stack);
                 case OpCode.DIV -> opDIV(stack);
                 case OpCode.NEG -> opNEG(stack);
+                case OpCode.AND -> opAND(stack);
+                case OpCode.AND_L -> opAND_L(stack);
+                case OpCode.AND_R -> opAND_R(stack);
+                case OpCode.OR_L -> opOR_L(stack);
+                case OpCode.OR_R -> opOR_R(stack);
+                case OpCode.OR -> opOR(stack);
                 case OpCode.JMP -> pc = opJMP(pc);
                 case OpCode.JNE -> pc = opJNE(pc, stack);
                 case OpCode.LT -> opLT(stack);

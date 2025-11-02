@@ -2,9 +2,7 @@ package nl.tue.vmcourse.toy;
 
 import nl.tue.vmcourse.toy.bci.BciDisassembler;
 import nl.tue.vmcourse.toy.bci.BciTracer;
-import nl.tue.vmcourse.toy.bci.ToyBciLoop;
 import nl.tue.vmcourse.toy.bci.value.VNull;
-import nl.tue.vmcourse.toy.bci.value.Value;
 import nl.tue.vmcourse.toy.builtins.BuiltinBuilder;
 import nl.tue.vmcourse.toy.interpreter.ToySyntaxErrorException;
 import nl.tue.vmcourse.toy.lang.RootCallTarget;
@@ -14,9 +12,11 @@ import nl.tue.vmcourse.toy.parser.ToyLangParser;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.misc.Interval;
 
-import java.io.IOException;
+import java.io.*;
+
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+
 
 public class ToyLauncher {
 
@@ -26,6 +26,27 @@ public class ToyLauncher {
     public static final boolean IC_ENABLED;
     public static final boolean ROPES_ENABLED;
     public static final boolean ARRAYS_ENABLED;
+
+
+    public static void forceUtf8StdStreams() {
+        // stdout
+        System.setOut(
+            new PrintStream(
+                new FileOutputStream(FileDescriptor.out), // OutputStream, not FileDescriptor
+                true,
+                StandardCharsets.UTF_8
+            )
+        );
+
+        // stderr
+        System.setErr(
+            new PrintStream(
+                new FileOutputStream(FileDescriptor.err),
+                true,
+                StandardCharsets.UTF_8
+            )
+        );
+    }
 
     static {
         // In your final submission, you want to remove this (otherwise, tests may fail!)
@@ -49,6 +70,8 @@ public class ToyLauncher {
                 System.out.println("Toy Array Strategies enabled");
             }
         }
+
+        forceUtf8StdStreams();
     }
 
     public static Object eval(String code) {

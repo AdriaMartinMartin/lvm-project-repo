@@ -1,7 +1,8 @@
 package nl.tue.vmcourse.toy.bci.value;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+
+import nl.tue.vmcourse.toy.interpreter.ToySyntaxErrorException;
 
 public final class VString implements Value {
     private final String v;
@@ -10,40 +11,49 @@ public final class VString implements Value {
         this.v = v;
     }
 
-    public String v() { return v; }
+    public String v() {
+        return v;
+    }
 
     @Override
     public Value add(Value r) {
-        if (r instanceof VFunction) throw new RuntimeException("Cannot add a VString to " + r.getClass().getSimpleName());
+        if (r instanceof VFunction)
+            throw new ToySyntaxErrorException("Type error: operation \"+\" not defined for " + toErrString() + ", " + r.toErrString());
+        else if (r instanceof VObject)
+            return new VString(v + "[foreign object]");
 //        throw new UnsupportedOperationException("Cannot add VString to " + r.getClass().getSimpleName());
         return new VString(v + r);
     }
 
     @Override
     public Value sub(Value r) {
-        throw new RuntimeException("Cannot do subtract operations with VString");
+        throw new ToySyntaxErrorException("Type error: operation \"-\" not defined for " + toErrString() + ", " + r.toErrString());
     }
 
     @Override
     public Value mul(Value r) {
-        throw new RuntimeException("Cannot do multiplications with VString");
+        throw new ToySyntaxErrorException("Type error: operation \"*\" not defined for " + toErrString() + ", " + r.toErrString());
     }
 
     @Override
     public Value div(Value r) {
-        throw new RuntimeException("Cannot do division with VString");
+        throw new ToySyntaxErrorException("Type error: operation \"/\" not defined for " + toErrString() + ", " + r.toErrString());
     }
 
     @Override
     public Value neg() {
-        throw new RuntimeException("Error on \"-\": Unary operation only defined for numbers");
+        throw new ToySyntaxErrorException("Runtime error on \"-\": Unary operation only defined for numbers");
     }
 
     @Override
-    public Value lt(Value r) { throw new RuntimeException("Cannot do less than operations with VString"); }
+    public Value lt(Value r) {
+        throw new ToySyntaxErrorException("Type error: operation \"<\" not defined for String \"" + v + "\", " + new VType(r) + "\"" + r + "\"");
+    }
 
     @Override
-    public Value le(Value r) { throw new RuntimeException("Cannot do less equal operations with VString"); }
+    public Value le(Value r) {
+        throw new ToySyntaxErrorException("Type error: operation \"<=\" not defined for " + toErrString() + ", " + r.toErrString());
+    }
 
     @Override
     public Value eq(Value r) {
@@ -55,6 +65,11 @@ public final class VString implements Value {
     }
 
     @Override
+    public int length() {
+        return v.length();
+    }
+
+    @Override
     public void print() {
         System.out.println(v);
     }
@@ -63,4 +78,11 @@ public final class VString implements Value {
     public String toString() {
         return v;
     }
+
+    @Override
+    public String toErrString() {
+        return "String \"" + v + "\"";
+    }
+
+
 }

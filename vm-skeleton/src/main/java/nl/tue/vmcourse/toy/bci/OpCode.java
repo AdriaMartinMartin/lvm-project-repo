@@ -28,6 +28,8 @@ public final class OpCode {
     public static final byte DIV = 0x18;
     public static final byte DIV_I64 = 0x19;
     public static final byte NEG = 0x1A;
+    public static final byte AND = 0x1B;
+    public static final byte OR = 0x1C;
 
     // Control flow, comparisons...
     public static final byte JMP = 0x20;
@@ -37,6 +39,11 @@ public final class OpCode {
     public static final byte LE = 0x23;
     public static final byte EQ = 0x24;
     public static final byte NOT = 0x25;
+
+    public static final byte AND_L = 0x26;
+    public static final byte AND_R = 0x27;
+    public static final byte OR_L = 0x28;
+    public static final byte OR_R = 0x29;
 
     // Local/args
     public static final byte LOAD_ARG = 0x30;
@@ -68,11 +75,18 @@ public final class OpCode {
             case PUSH_K -> "PUSH_K";
             case PUSH_F -> "PUSH_F";
             case PUSH_NULL -> "PUSH_NULL";
+            case POP -> "POP";
             case ADD -> "ADD";
             case SUB -> "SUB";
             case MUL -> "MUL";
             case DIV -> "DIV";
             case NEG -> "NEG";
+            case AND -> "AND";
+            case AND_L -> "AND_L";
+            case AND_R -> "AND_R";
+            case OR_L -> "OR_L";
+            case OR_R -> "OR_R";
+            case OR -> "OR";
             case NOT -> "NOT";
             case JMP -> "JMP";
             case JNE -> "JNE";
