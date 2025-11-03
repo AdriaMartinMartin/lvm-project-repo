@@ -17,6 +17,7 @@ import java.util.Map;
 public class ToyBciLoop extends ToyAbstractFunctionBody {
 
     private static final int JIT_COMPILATION_THRESHOLD = 3;
+    public static final boolean INLINE_CACHING = System.getProperty("toy.InlineCaches") != null;
     private static final int LOCALS_SLOTS = 256;
     private static final Map<Class<?>, ConstantBoxer> BOXER = new HashMap<>();
 //    private static final Map<Class<? extends Value>, ConstantUnboxer<? extends Value>> UNBOXER = new HashMap<>();
@@ -24,6 +25,30 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
     private static void checkAddr(int target, int codeLen) {
         if (target < 0 || target > codeLen) {
             throw new RuntimeException("Jump target out of range: " + target + " (code len=" + codeLen + ")");
+        }
+    }
+
+    static final class GetIC {
+        final Shape shape;
+        final String key;
+        final int slot;
+
+        GetIC(Shape shape, String key, int slot) {
+            this.shape = shape;
+            this.key = key;
+            this.slot = slot;
+        }
+    }
+
+    static final class SetIC {
+        final Shape shape;
+        final String key;
+        final int slot;
+
+        SetIC(Shape shape, String key, int slot) {
+            this.shape = shape;
+            this.key = key;
+            this.slot = slot;
         }
     }
 
@@ -44,20 +69,6 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
         BOXER.put(VNull.class, o -> Value.NULL);
         BOXER.put(VFunction.class, o -> (Value) o);
         BOXER.put(VType.class, o -> (Value) o);
-
-        // Map -> VObject
-        BOXER.put(Map.class, o -> {
-            Map<?, ?> m = (Map<?, ?>) o;
-            VObject obj = new VObject();
-            for (Map.Entry<?, ?> e : m.entrySet()) {
-                String k = (e.getKey() instanceof Value) ? VObject.toKeyString((Value) e.getKey()) : String.valueOf(e.getKey());
-                Value v = BOXER.get(e.getValue().getClass()).box(e.getValue());
-                obj.set(k, v);
-            }
-
-            return obj;
-        });
-
 
         // Unboxing
 //        UNBOXER.put(VLong.class, (ConstantUnboxer<VLong>) VLong::v);
@@ -81,10 +92,17 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
 //        return findUnboxer(v.getClass()).unbox(v);
 //    }
 
+    // Data for the perfect functioning of interpreter
     private final String fName;
     private Map<String, RootCallTarget> functionTable = new HashMap<>();
     private final List<Object> constantPool;
     private final byte[] code;
+
+    // Inline Caching + Object storage
+    private final HashMap<Integer, GetIC> getICs = new HashMap<>();
+    private final HashMap<Integer, SetIC> setICs = new HashMap<>();
+    private int getIChits = 0, getICmisses = 0, setIChits = 0, setICmisses = 0;
+
 
     private final JITCompiler compiler;
 
@@ -342,28 +360,55 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
         return pc + 2;
     }
 
-    private void opSETPROP(Stack stack) {
+    private void opSETPROP(int pc, Stack stack) {
         Value v = stack.pop();
         Value k = stack.pop();
-        VObject o;
+        Value raw_o = stack.pop();
 
-        try {
-            o = (VObject) stack.pop();
-            o.set(k, v);
-        } catch (RuntimeException e) {
+        if (!(raw_o instanceof VObject))
             throw new ToySyntaxErrorException("Undefined property: " + k);
+
+        final String key = VObject.toKeyString(k);
+        VObject obj = (VObject) raw_o;
+
+        SetIC ic = setICs.get(pc);
+        if (INLINE_CACHING && ic != null && obj.shape() == ic.shape && ic.key.equals(key)) {
+            obj.setFast(ic.slot, v);
+            setIChits++;
+            return;
+        }
+
+        obj.set(key, v);
+        if (INLINE_CACHING) {
+            setICs.put(pc, new SetIC(obj.shape(), key, obj.shape().slotOf(key)));
+            setICmisses++;
         }
     }
 
-    private void opGETPROP(Stack stack) {
+    private void opGETPROP(int pc, Stack stack) {
         Value k = stack.pop();
-        Value o;
+        Value raw_o = stack.pop();
 
-        o = stack.pop();
-        if (!(o instanceof VObject))
+        if (!(raw_o instanceof VObject))
             throw new ToySyntaxErrorException("Undefined property: " + k.toString());
 
-        stack.push(((VObject) o).get(k));
+        VObject obj = (VObject) raw_o;
+        final String key = VObject.toKeyString(k);
+
+        GetIC ic = getICs.get(pc);
+        if (INLINE_CACHING && ic != null && obj.shape() == ic.shape && ic.key.equals(key)) {
+            stack.push(obj.getFast(ic.slot));
+            getIChits++;
+            return;
+        }
+
+        Value v = obj.get(key); // -> This might throw error if it doesn't exist the property.
+        stack.push(v);
+
+        if (INLINE_CACHING) {
+            getICs.put(pc, new GetIC(obj.shape(), key, obj.shape().slotOf(key)));
+            getICmisses++;
+        }
     }
 
     private int opCALL(int pc, Stack stack) {
@@ -472,10 +517,18 @@ public class ToyBciLoop extends ToyAbstractFunctionBody {
                 case OpCode.LOAD_ARG -> pc = opLOAD_ARG(pc, frame, stack);
                 case OpCode.LOAD_L -> pc = opLOAD_L(pc, stack, locals);
                 case OpCode.STR_K -> pc = opSTR_K(pc, stack, locals);
-                case OpCode.SETPROP -> opSETPROP(stack);
-                case OpCode.GETPROP -> opGETPROP(stack);
+                case OpCode.SETPROP -> opSETPROP(pc, stack);
+                case OpCode.GETPROP -> opGETPROP(pc, stack);
                 case OpCode.CALL -> pc = opCALL(pc, stack);
                 case OpCode.RET -> {
+                    if (INLINE_CACHING) {
+                        System.out.println("--------------------------------------------------------\n" +
+                            "Inline Cache Report:\n" +
+                            "GetIC hits: " + getIChits + ", GetIC misses: " + getICmisses + "\n" +
+                            "SetIC hits: " + setIChits + ", SetIC misses: " + setICmisses + "\n");
+                    }
+
+
                     return stack.isEmpty() ? Value.NULL : stack.pop();
                 }
                 // case ..

@@ -1,65 +1,70 @@
 package nl.tue.vmcourse.toy.bci.value;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-
 import nl.tue.vmcourse.toy.interpreter.ToySyntaxErrorException;
 
+import java.util.Arrays;
+
 public class VObject implements Value {
-    private final Map<String, Value> props;
+    private Shape shape = Shape.EMPTY_SHAPE;
+    private Value[] fields = new Value[0];
+    // public VObject prototype;
 
-    public VObject() {
-        this.props = new LinkedHashMap<>();
+    public Shape shape() { return  shape; }
+
+
+    public Value get(String key) {
+        Integer slot = shape.slotOf(key);
+        if (slot != null) return fields[slot];
+
+        throw new ToySyntaxErrorException("Undefined property: " + key);
     }
 
-    public final Map<String, Value> v() {
-        return props;
-    }
-
-    public Value get(Value key) {
-        Value v = props.get(toKeyString(key));
-
-        if (v == null) throw new ToySyntaxErrorException("Undefined property: " + key.toString());
-
-        return v;
-    }
-
-    public Value get(long idx) {
-        return props.values().stream().skip(idx).findFirst().orElse(Value.NULL);
-    }
-
-    public void set(Value key, Value v) {
-        props.put(toKeyString(key), v);
-    }
+    public Value getFast(int slot) { return fields[slot]; }
 
     public void set(String key, Value v) {
-        props.put(key, v);
+        Integer slot = shape.slotOf(key);
+        if (slot == null) {
+            shape = shape.addProperty(key);
+            slot = shape.slotOf(key);
+            ensureCapacity(slot);
+        }
+
+        fields[slot] = v;
     }
 
-    public Value has(Value key) {
-        return new VBool(props.containsKey(toKeyString(key)));
+    public void setFast(int slot, Value v) { fields[slot] = v; }
+
+    public boolean delete(Value k) {
+        String key = toKeyString(k);
+
+        if (shape.slotOf(key) == null) return false;
+
+        this.shape = shape.deleteProperty(key);
+        return true;
     }
 
-    public Boolean delete(Value key) {
-        return props.remove(toKeyString(key)) != null;
+    public Boolean has(Value v) {
+        String key = toKeyString(v);
+        return shape.slotOf(key) != null;
     }
 
-    public int size() {
-        return props.size();
-    }
-
-    public Set<String> keys() {
-        return Collections.unmodifiableSet(props.keySet());
+    private void ensureCapacity(Integer slot) {
+        if (slot >= fields.length) {
+            fields = Arrays.copyOf(fields, slot + 1);
+        }
     }
 
     public static String toKeyString(Value v) {
-        if (v instanceof VObject) {
-            return ((VObject) v).v().toString();
-        }
+        if (v instanceof VBigInteger) return String.valueOf(((VBigInteger) v).v());
+        if (v instanceof VBool) return String.valueOf(((VBool) v).v());
+        if (v instanceof VFunction) return ((VFunction) v).getName();
+        if (v instanceof VLong) return String.valueOf(((VLong) v).v());
+        if (v instanceof VNull) return "NULL";
+        if (v instanceof VObject) return "[foreign object]";
+        if (v instanceof VType) return ((VType) v).v();
+        if (v instanceof VString) return ((VString) v).v();
 
-        return v.toString();
+        throw new ToySyntaxErrorException("No valid key for Object");
     }
 
     @Override
@@ -101,7 +106,7 @@ public class VObject implements Value {
     @Override
     public Value eq(Value r) {
         if (r instanceof VObject) {
-            return new VBool(props == ((VObject) r).v());
+            return new VBool(this == r);
         }
 
         return new VBool(false);
@@ -109,7 +114,7 @@ public class VObject implements Value {
 
     @Override
     public int length() {
-        return props.size();
+        return shape.propToSlot.size();
     }
 
     @Override

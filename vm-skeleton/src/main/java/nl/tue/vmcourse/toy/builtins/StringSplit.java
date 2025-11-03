@@ -1,8 +1,6 @@
 package nl.tue.vmcourse.toy.builtins;
 
 import nl.tue.vmcourse.toy.bci.BciTracer;
-import nl.tue.vmcourse.toy.bci.value.VBool;
-import nl.tue.vmcourse.toy.bci.value.VLong;
 import nl.tue.vmcourse.toy.bci.value.VObject;
 import nl.tue.vmcourse.toy.bci.value.VString;
 import nl.tue.vmcourse.toy.interpreter.ToyAbstractFunctionBody;

@@ -1,7 +1,6 @@
 package nl.tue.vmcourse.toy.builtins;
 
 import nl.tue.vmcourse.toy.bci.BciTracer;
-import nl.tue.vmcourse.toy.bci.OpCode;
 import nl.tue.vmcourse.toy.bci.value.VObject;
 import nl.tue.vmcourse.toy.interpreter.ToyAbstractFunctionBody;
 import nl.tue.vmcourse.toy.lang.RootCallTarget;

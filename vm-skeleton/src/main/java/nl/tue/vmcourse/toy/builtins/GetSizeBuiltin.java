@@ -3,11 +3,9 @@ package nl.tue.vmcourse.toy.builtins;
 import nl.tue.vmcourse.toy.bci.BciTracer;
 import nl.tue.vmcourse.toy.bci.value.VLong;
 import nl.tue.vmcourse.toy.bci.value.Value;
-import nl.tue.vmcourse.toy.bci.value.VObject;
 import nl.tue.vmcourse.toy.interpreter.ToyAbstractFunctionBody;
 import nl.tue.vmcourse.toy.lang.RootCallTarget;
 import nl.tue.vmcourse.toy.lang.VirtualFrame;
-import nl.tue.vmcourse.toy.bci.OpCode;
 
 import java.util.List;
 import java.util.Map;

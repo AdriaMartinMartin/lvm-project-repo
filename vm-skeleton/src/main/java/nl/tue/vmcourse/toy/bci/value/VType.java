@@ -1,9 +1,7 @@
 package nl.tue.vmcourse.toy.bci.value;
 
 import nl.tue.vmcourse.toy.interpreter.ToySyntaxErrorException;
-import nl.tue.vmcourse.toy.lang.RootCallTarget;
 
-import java.util.Map;
 import java.util.Objects;
 
 public class VType implements Value {

@@ -22,12 +22,11 @@ public class HasProperty extends ToyAbstractFunctionBody {
         if (!(raw_o instanceof VObject))
             throw new ToySyntaxErrorException("Not an object!");
 
+        if (!(k instanceof VString)) return new VBool(false);
+
         VObject o = (VObject) raw_o;
         try {
-            if (k instanceof VLong)
-                return new VBool(!(o.get(((VLong) k).v()) instanceof VNull));
-
-            return new VBool(!(o.get(k) instanceof VNull));
+            return new VBool(o.has(k));
         } catch (ToySyntaxErrorException e) {
             return new VBool(false);
         }
